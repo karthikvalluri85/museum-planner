@@ -39,7 +39,7 @@ node tools/validate-contracts.mjs --instance contracts/firestore/object-chunk.sc
 node tools/validate-contracts.mjs --graph "$STORE"/floor_graphs/*.json
 
 step "4. Start the planner on the same store"
-(cd services/planner && STORE_BACKEND=file FILE_STORE_DIR="$STORE" PORT="$PORT" "$PY" -m uvicorn planner.main:app --host 127.0.0.1 --port "$PORT" --log-level warning) &
+(cd services/planner && STORE_BACKEND=file FILE_STORE_DIR="$STORE" PORT="$PORT" "$PY" -m uvicorn planner.main:create_app --factory --host 127.0.0.1 --port "$PORT" --log-level warning) &
 PLANNER_PID=$!
 trap 'kill "$PLANNER_PID" 2>/dev/null || true' EXIT
 for _ in $(seq 1 40); do

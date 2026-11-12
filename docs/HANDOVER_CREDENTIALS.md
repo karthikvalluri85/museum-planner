@@ -132,11 +132,21 @@ The last command prints the value for `WORKLOAD_IDENTITY_PROVIDER`. `DEPLOY_SERV
 2. **`docker-compose.yml`.** Never run. The emulator image tag, its health checks, and the Pub/Sub REST calls in `pubsub-init` are from memory.
 3. **`deploy/gcp-deploy.sh` and both workflows.** Never run. Shell syntax is checked; the gcloud flags are not.
 4. **The Scheduler-to-job call** (step 8 of the deploy script) and decision D05 (Pub/Sub cannot start a job directly). Confirm both against current Cloud Run documentation.
-5. **The live museum adapters.** The fixture path is what tests cover. The first live run against the Met and AIC APIs may hit rate limits or query-parameter mistakes.
+5. **The live museum adapters.** The fixture path is what tests cover. The first live run against the Met and AIC APIs may hit rate limits or query-parameter mistakes. Checked on 2026-11-13: the Met's `/v1/search` returns HTTP 410 (retired) and `/v1.1/search` returns 200, so the adapter uses `v1.1`. The Met blocks scripted clients after a burst of requests (HTTP 403), which is why only 41 real Met records are in the fixtures; a live run from Cloud Run may hit the same wall. The AIC API refuses to page past 1,000 search results, so one run ingests about 1,000 AIC works at most.
 6. **The floor graphs.** Hand-built and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md). Until someone checks them, the app says so on every plan. Known gaps found by comparing the graphs with real API records in the fixtures:
    - The Met graph was built from a map dated about 2016 to 2020. Live Met records use gallery numbers `341`, `361`, `362`, `363` (the Rockefeller Wing, renumbered when it reopened) and `099`, none of which are in the graph, so objects there cannot be planned yet. Get the current map from metmuseum.org and update `services/ingestion-job/seed/floor_graphs/met.json`.
    - The Met graph marks no place as near both a restroom and a cafe, and only 4 places with seating, so plans for a young child end near a restroom only and limited-stamina plans get few rest stops.
    - Three Met areas are stairs-only in the graph because step-free access could not be confirmed: the Greek and Roman mezzanine, the Modern mezzanine, and the Robert Lehman Collection.
+
+## Behaviors the builders chose that you may want to change
+
+The planner and ingestion code went beyond the brief in a few places. None is wrong; each is a product call.
+
+- **Step-free, but only filler is reachable.** If your interests match objects that all sit behind stairs, the planner answers "no step-free route" and names the stairs, even though it could have returned a step-free plan made only of unrelated highlights. If nothing matches your interests anywhere, it returns the step-free highlights plan.
+- **A museum that comes back empty is a failed ingest.** If a run finds zero plannable objects, nothing is written and the message is retried, so an API hiccup cannot wipe a good museum.
+- **A plan that fails its own safety check is withheld.** The planner returns HTTP 500 `internal_error` instead of a plan whose step-free claim disagrees with its route.
+- **Low-value highlights can pad a plan.** When time remains, highlights that do not match your interests are added, even far away. There is no minimum score.
+- **`max_walking_minutes` is ignored unless limited stamina is on.**
 
 ## Costs
 

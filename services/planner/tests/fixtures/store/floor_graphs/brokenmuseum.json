@@ -1,0 +1,14 @@
+{
+  "museum_id": "brokenmuseum",
+  "version": "broken",
+  "source": "Synthetic broken fixture: a staircase wrongly marked step-free.",
+  "verification": { "status": "unverified", "notes": null, "verified_on": null },
+  "entrance_node_id": "entrance",
+  "nodes": [
+    { "id": "entrance", "name": "Broken Entrance", "kind": "entrance", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false },
+    { "id": "upstairs", "name": "Broken Upstairs", "kind": "gallery", "floor": "2", "wing": "Upper", "galleries": ["1"], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "upstairs", "walk_minutes": 2, "step_free": true, "kind": "stairs", "name": "Broken Stair" }
+  ]
+}

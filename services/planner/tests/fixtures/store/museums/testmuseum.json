@@ -1,0 +1,21 @@
+{
+  "id": "testmuseum",
+  "name": "Test Museum (synthetic)",
+  "city": "Nowhere",
+  "source": { "api_name": "Fake Collection API", "api_base_url": "https://example.org/fake-api", "license": "CC0" },
+  "data_notice": "Built from the museum's public data. The museum has not reviewed this plan.",
+  "object_count": 31,
+  "skipped_no_gallery_count": 0,
+  "chunk_count": 2,
+  "facets": [
+    { "tag": "animals", "label": "Animals", "count": 8 },
+    { "tag": "arms and armor", "label": "Arms and Armor", "count": 8 },
+    { "tag": "ceramics", "label": "Ceramics", "count": 4 },
+    { "tag": "paintings", "label": "Paintings", "count": 4 },
+    { "tag": "musical instruments", "label": "Musical Instruments", "count": 3 },
+    { "tag": "cats", "label": "Cats", "count": 3 },
+    { "tag": "astronomy", "label": "Astronomy", "count": 2 }
+  ],
+  "last_ingested_at": "2026-11-13T09:00:05Z",
+  "ingest_run_id": "test-run-1"
+}

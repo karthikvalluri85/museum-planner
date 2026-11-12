@@ -118,9 +118,9 @@ Contract version 1.0.0 (OpenAPI 3.1.0).
 | Operation | operationId | What it does | Responses |
 |---|---|---|---|
 | `GET /healthz` | `getHealth` | Liveness probe. Does not touch Firestore. | 200 |
-| `GET /api/museums` | `listMuseums` | Museums that have been ingested and have a floor graph. | 200 |
-| `GET /api/museums/{museum_id}` | `getMuseum` | One museum with interest facets, wings, and floor-data provenance. | 200, 404 |
-| `POST /api/plan` | `createPlan` | Build a plan, or rebuild the rest of one from the current gallery. | 200, 404, 422 |
+| `GET /api/museums` | `listMuseums` | Museums that have been ingested and have a floor graph. | 200, 503 |
+| `GET /api/museums/{museum_id}` | `getMuseum` | One museum with interest facets, wings, and floor-data provenance. | 200, 404, 503 |
+| `POST /api/plan` | `createPlan` | Build a plan, or rebuild the rest of one from the current gallery. | 200, 404, 422, 500, 503 |
 <!-- /GENERATED:http-api -->
 
 ## Backing resources

@@ -1,0 +1,32 @@
+{
+  "museum_id": "testmuseum",
+  "version": "2026-11-13.test",
+  "source": "Synthetic test fixture. Not a real building.",
+  "verification": { "status": "unverified", "notes": "Test data.", "verified_on": null },
+  "entrance_node_id": "entrance",
+  "nodes": [
+    { "id": "entrance", "name": "Test Entrance Hall", "kind": "entrance", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": ["loud", "crowded"], "has_seating": true, "near_restroom": true, "near_cafe": false },
+    { "id": "hall", "name": "Central Hall", "kind": "hub", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": [], "has_seating": true, "near_restroom": false, "near_cafe": false },
+    { "id": "cafe", "name": "Garden Cafe", "kind": "hub", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": [], "has_seating": true, "near_restroom": true, "near_cafe": true },
+    { "id": "east-1", "name": "East Galleries 101-102", "kind": "gallery", "floor": "1", "wing": "East Wing", "galleries": ["101", "102"], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false },
+    { "id": "east-2", "name": "East Gallery 103", "kind": "gallery", "floor": "1", "wing": "East Wing", "galleries": ["103"], "sensory": [], "has_seating": true, "near_restroom": false, "near_cafe": false },
+    { "id": "bright-court", "name": "Glass Court 110", "kind": "gallery", "floor": "1", "wing": "West Wing", "galleries": ["110"], "sensory": ["bright"], "has_seating": false, "near_restroom": false, "near_cafe": false },
+    { "id": "west-corridor", "name": "West Corridor", "kind": "hub", "floor": "1", "wing": "West Wing", "galleries": [], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false },
+    { "id": "west-1", "name": "West Galleries 111-112", "kind": "gallery", "floor": "1", "wing": "West Wing", "galleries": ["111", "112"], "sensory": [], "has_seating": true, "near_restroom": false, "near_cafe": false },
+    { "id": "north-2", "name": "North Galleries 201-202", "kind": "gallery", "floor": "2", "wing": "North Wing", "galleries": ["201", "202"], "sensory": [], "has_seating": true, "near_restroom": false, "near_cafe": false },
+    { "id": "tower", "name": "Tower Room 301", "kind": "gallery", "floor": "2", "wing": "North Wing", "galleries": ["301"], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "hall", "walk_minutes": 1, "step_free": true, "kind": "level", "name": null },
+    { "from": "hall", "to": "cafe", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "hall", "to": "east-1", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "east-1", "to": "east-2", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "hall", "to": "bright-court", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "bright-court", "to": "west-1", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "hall", "to": "west-corridor", "walk_minutes": 3, "step_free": true, "kind": "level", "name": null },
+    { "from": "west-corridor", "to": "west-1", "walk_minutes": 3, "step_free": true, "kind": "ramp", "name": "West Ramp" },
+    { "from": "hall", "to": "north-2", "walk_minutes": 2, "step_free": false, "kind": "stairs", "name": "Grand Stair" },
+    { "from": "hall", "to": "north-2", "walk_minutes": 4, "step_free": true, "kind": "elevator", "name": "North Elevator" },
+    { "from": "north-2", "to": "tower", "walk_minutes": 2, "step_free": false, "kind": "stairs", "name": "Tower Stair" }
+  ]
+}

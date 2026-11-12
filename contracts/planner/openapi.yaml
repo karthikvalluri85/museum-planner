@@ -45,6 +45,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MuseumList"
+        "503":
+          description: "Museum data could not be read from the store. Safe to retry."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/museums/{museum_id}:
     get:
       operationId: getMuseum
@@ -61,6 +67,12 @@ paths:
                 $ref: "#/components/schemas/MuseumDetail"
         "404":
           description: "Unknown museum."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: "Museum data could not be read from the store. Safe to retry."
           content:
             application/json:
               schema:
@@ -95,6 +107,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        "500":
+          description: "A plan failed its own integrity check (invariants I1 to I3) and was withheld rather than returned."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: "Museum data could not be read from the store. Safe to retry."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   parameters:
     MuseumId:
@@ -125,7 +149,7 @@ components:
           required: [code, message]
           properties:
             code:
-              enum: [museum_not_found, invalid_request, unknown_gallery, store_unavailable]
+              enum: [museum_not_found, invalid_request, unknown_gallery, store_unavailable, internal_error]
             message:
               type: string
               minLength: 1

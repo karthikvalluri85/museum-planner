@@ -1,0 +1,8 @@
+{
+  "museum_id": "testmuseum",
+  "chunk_index": 2,
+  "ingest_run_id": "test-run-0-stale",
+  "objects": [
+    { "id": "testmuseum:stale1", "museum_id": "testmuseum", "source_id": "stale1", "title": "Stale Chunk Armor (must never appear)", "artist": null, "date": null, "tags": ["arms and armor", "animals", "astronomy"], "department": "Arms and Armor", "medium": null, "description": null, "gallery": "101", "image_url": null, "source_url": null, "dwell_minutes": 1, "size_class": "monumental", "is_highlight": true }
+  ]
+}

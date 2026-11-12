@@ -1,0 +1,13 @@
+{
+  "id": "orphanmuseum",
+  "name": "Orphan Museum (synthetic, no floor graph)",
+  "city": "Nowhere",
+  "source": { "api_name": "Fake Collection API", "api_base_url": "https://example.org/fake-api", "license": "CC0" },
+  "data_notice": "Built from the museum's public data. The museum has not reviewed this plan.",
+  "object_count": 0,
+  "skipped_no_gallery_count": 0,
+  "chunk_count": 0,
+  "facets": [],
+  "last_ingested_at": "2026-11-13T09:00:05Z",
+  "ingest_run_id": "test-run-1"
+}
