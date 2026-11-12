@@ -1,0 +1,849 @@
+{
+  "museum_id": "aic",
+  "version": "2026-11-13.1",
+  "source": "Art Institute of Chicago Visitor Guide with floor plans for levels LL, 1, 2 and 3 (official guide layout, 2025 edition as labelled by the host), read 2026-11-13 from a mirror at https://all-maps.com/wp-content/uploads/2025/05/The-Art-Institute-of-Chicago-Museum-Map-2025.pdf. artic.edu pages (museum floor plan, accessibility) returned HTTP 403 on 2026-11-13.",
+  "verification": {
+    "status": "unverified",
+    "notes": "Gallery numbers and ranges, floors, elevator, ramp, stair, restroom and cafe icons, and the notes that all buildings connect on level 1 but not on LL, 2 or 3 were read from the AIC Visitor Guide floor plans (2025, mirror copy). Elevator pairings across floors come from matching icon positions on the stacked plans; adjacency and walk times are inferred from the drawings, and same-level connections are assumed step-free unless the plan shows stairs. Nothing has been checked on site.",
+    "verified_on": null
+  },
+  "entrance_node_id": "modern-entrance",
+  "nodes": [
+    {
+      "id": "modern-entrance",
+      "name": "Modern Wing Entrance (Monroe Street)",
+      "kind": "entrance",
+      "floor": "1",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "griffin-court",
+      "name": "Griffin Court",
+      "kind": "hub",
+      "floor": "1",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [
+        "bright"
+      ],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "michigan-street",
+      "name": "Michigan Avenue Entrance (street)",
+      "kind": "hub",
+      "floor": "1",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "michigan-lobby",
+      "name": "Michigan Avenue lobby and Woman's Board Grand Staircase",
+      "kind": "hub",
+      "floor": "1",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [
+        "loud",
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "special-exh",
+      "name": "Special Exhibitions, galleries 182 to 184",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Special Exhibitions",
+      "galleries": [
+        "182",
+        "183",
+        "184"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "photo-media",
+      "name": "Photography, Film, and Media",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Photography",
+      "galleries": [
+        "186",
+        "187",
+        "188"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "alsdorf",
+      "name": "Arts of Asia, Alsdorf Galleries",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of Asia",
+      "galleries": [
+        "140",
+        "141",
+        "142",
+        "143"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "ancient",
+      "name": "Arts of the Greek, Roman, and Byzantine Worlds",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Ancient and Byzantine",
+      "galleries": [
+        "150",
+        "151",
+        "152",
+        "153",
+        "154"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "chagall",
+      "name": "Chagall Windows and Chicago Stock Exchange Trading Room",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Chagall Windows",
+      "galleries": [
+        "144"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "sculpture-court",
+      "name": "Sculpture Court and galleries 160 to 162",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of the Americas",
+      "galleries": [
+        "160",
+        "161",
+        "162"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "americas-f1",
+      "name": "Arts of the Americas, 1650 to 1910",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of the Americas",
+      "galleries": [
+        "163",
+        "164",
+        "165",
+        "166",
+        "167",
+        "168",
+        "169",
+        "170",
+        "171",
+        "172",
+        "173",
+        "174",
+        "175",
+        "176",
+        "177",
+        "178",
+        "179"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "prints",
+      "name": "Prints and Drawings",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Prints and Drawings",
+      "galleries": [
+        "124",
+        "124A",
+        "124B",
+        "125",
+        "126",
+        "127",
+        "127A",
+        "127B"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asia-west",
+      "name": "Arts of China, Japan, and Korea, galleries 100 to 109",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of Asia",
+      "galleries": [
+        "100",
+        "101",
+        "101A",
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "109"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asia-east",
+      "name": "Arts of China, Japan, and Korea, galleries 130 to 135",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of Asia",
+      "galleries": [
+        "130",
+        "131",
+        "132",
+        "133",
+        "134",
+        "135"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "americas-136",
+      "name": "Arts of the Americas, 4000 BCE to present",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of the Americas",
+      "galleries": [
+        "136"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "africa",
+      "name": "Arts of Africa",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arts of Africa",
+      "galleries": [
+        "137"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "europe-west",
+      "name": "Arts of Europe: Painting and Sculpture, galleries 200 to 227",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Arts of Europe",
+      "galleries": [
+        "200",
+        "201",
+        "202",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "210",
+        "211",
+        "212",
+        "213",
+        "214",
+        "215",
+        "216",
+        "217",
+        "218",
+        "219",
+        "220",
+        "221",
+        "222",
+        "223",
+        "224",
+        "225",
+        "226",
+        "227"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "europe-design",
+      "name": "Arts of Europe: Design, 1600 to 1900 (galleries 231 to 234)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Arts of Europe",
+      "galleries": [
+        "231",
+        "232",
+        "233",
+        "234"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "europe-medieval",
+      "name": "Arts of Europe: Medieval and Renaissance, and Arms and Armor",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Arts of Europe",
+      "galleries": [
+        "235",
+        "236",
+        "237",
+        "238",
+        "239"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "impressionism",
+      "name": "Impressionism and European galleries 240 to 248",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Arts of Europe",
+      "galleries": [
+        "240",
+        "241",
+        "242",
+        "243",
+        "244",
+        "245",
+        "246",
+        "247",
+        "248"
+      ],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "americas-f2",
+      "name": "Arts of the Americas, 1860 to 1950, with gallery 249",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Arts of the Americas",
+      "galleries": [
+        "249",
+        "261",
+        "262",
+        "263",
+        "264",
+        "265",
+        "271",
+        "272",
+        "273"
+      ],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "modern-f2",
+      "name": "Modern Wing, Floor 2: Architecture and Design and Contemporary",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Modern and Contemporary",
+      "galleries": [
+        "283",
+        "284",
+        "285",
+        "286",
+        "288",
+        "289",
+        "290",
+        "291",
+        "292",
+        "293",
+        "294",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299"
+      ],
+      "sensory": [],
+      "has_seating": true,
+      "near_restroom": true,
+      "near_cafe": true
+    },
+    {
+      "id": "modern-f3",
+      "name": "Modern Art, 1900 to 1960",
+      "kind": "gallery",
+      "floor": "3",
+      "wing": "Modern and Contemporary",
+      "galleries": [
+        "389",
+        "390",
+        "391",
+        "392",
+        "393",
+        "394",
+        "395",
+        "396",
+        "397",
+        "398",
+        "399"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "ll-photo",
+      "name": "Photography, lower level (galleries 1 to 4 and 10)",
+      "kind": "gallery",
+      "floor": "LL",
+      "wing": "Photography",
+      "galleries": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "10"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "ll-thorne",
+      "name": "Thorne Miniature Rooms",
+      "kind": "gallery",
+      "floor": "LL",
+      "wing": "Thorne Miniature Rooms",
+      "galleries": [
+        "11"
+      ],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "ll-arch",
+      "name": "Architecture and Design, lower level (gallery 24)",
+      "kind": "gallery",
+      "floor": "LL",
+      "wing": "Architecture and Design",
+      "galleries": [
+        "24"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "ll-egypt",
+      "name": "Arts of Ancient Egypt",
+      "kind": "gallery",
+      "floor": "LL",
+      "wing": "Arts of Ancient Egypt",
+      "galleries": [
+        "50"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "ll-textiles",
+      "name": "Textiles and the Cafe by McKinlock Court",
+      "kind": "gallery",
+      "floor": "LL",
+      "wing": "Textiles",
+      "galleries": [
+        "57",
+        "58",
+        "59",
+        "61"
+      ],
+      "sensory": [],
+      "has_seating": true,
+      "near_restroom": true,
+      "near_cafe": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "modern-entrance",
+      "to": "griffin-court",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "griffin-court",
+      "to": "special-exh",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "griffin-court",
+      "to": "photo-media",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "griffin-court",
+      "to": "alsdorf",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "alsdorf",
+      "to": "ancient",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "alsdorf",
+      "to": "sculpture-court",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "ancient",
+      "to": "chagall",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "sculpture-court",
+      "to": "americas-f1",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "alsdorf",
+      "to": "asia-east",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "ramp",
+      "name": "Ramp near gallery 131"
+    },
+    {
+      "from": "asia-east",
+      "to": "asia-west",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "asia-east",
+      "to": "americas-136",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "americas-136",
+      "to": "africa",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "asia-west",
+      "to": "michigan-lobby",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "michigan-lobby",
+      "to": "prints",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "michigan-street",
+      "to": "michigan-lobby",
+      "walk_minutes": 1,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Michigan Avenue front steps (between the lions)"
+    },
+    {
+      "from": "michigan-street",
+      "to": "michigan-lobby",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "ramp",
+      "name": "Accessible ramp at the Michigan Avenue entrance (marked on the floor plan)"
+    },
+    {
+      "from": "michigan-lobby",
+      "to": "europe-west",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Woman's Board Grand Staircase (up to the second floor)"
+    },
+    {
+      "from": "michigan-lobby",
+      "to": "europe-west",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator beside Fullerton Hall, near Member Services (second floor by gallery 216)"
+    },
+    {
+      "from": "michigan-lobby",
+      "to": "ll-photo",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Woman's Board Grand Staircase (down to the lower level)"
+    },
+    {
+      "from": "michigan-lobby",
+      "to": "ll-arch",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator beside Fullerton Hall, near Member Services (lower level by gallery 24)"
+    },
+    {
+      "from": "asia-east",
+      "to": "europe-design",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 130 (second floor by gallery 231)"
+    },
+    {
+      "from": "asia-east",
+      "to": "ll-photo",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 130 (lower level by gallery 2)"
+    },
+    {
+      "from": "ll-photo",
+      "to": "ll-thorne",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "ll-photo",
+      "to": "ll-arch",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "europe-west",
+      "to": "europe-design",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "europe-design",
+      "to": "europe-medieval",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "europe-design",
+      "to": "impressionism",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "ramp",
+      "name": "Ramp near gallery 231"
+    },
+    {
+      "from": "europe-west",
+      "to": "impressionism",
+      "walk_minutes": 1,
+      "step_free": false,
+      "kind": "level",
+      "name": "Unconfirmed connection between gallery 226 and gallery 240 (the plan marks a ramp near gallery 231 instead) (may have steps)"
+    },
+    {
+      "from": "impressionism",
+      "to": "americas-f2",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "sculpture-court",
+      "to": "americas-f2",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 162 (second floor by galleries 249 and 262)"
+    },
+    {
+      "from": "americas-f1",
+      "to": "americas-f2",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Stairs in the Arts of the Americas galleries (163 to 179) up to the second floor"
+    },
+    {
+      "from": "sculpture-court",
+      "to": "ll-egypt",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 162 (lower level by gallery 50)"
+    },
+    {
+      "from": "ancient",
+      "to": "ll-egypt",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Stairs near gallery 150 down to Arts of Ancient Egypt (gallery 50)"
+    },
+    {
+      "from": "ll-egypt",
+      "to": "ll-textiles",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "chagall",
+      "to": "ll-textiles",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near the Chagall Windows (gallery 144), to the Cafe"
+    },
+    {
+      "from": "griffin-court",
+      "to": "modern-f2",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Modern Wing elevator beside the Modern Shop (Griffin Court)"
+    },
+    {
+      "from": "griffin-court",
+      "to": "modern-f2",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Usher|Lambe Family Staircase"
+    },
+    {
+      "from": "modern-f2",
+      "to": "modern-f3",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Modern Wing elevator near gallery 290 (third floor by gallery 389)"
+    }
+  ]
+}

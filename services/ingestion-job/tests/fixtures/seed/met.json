@@ -1,0 +1,16 @@
+{
+  "museum_id": "met",
+  "version": "test.1",
+  "source": "Small graph for tests only. Not a real floor plan.",
+  "verification": { "status": "unverified", "notes": "Test data.", "verified_on": null },
+  "entrance_node_id": "entrance",
+  "nodes": [
+    { "id": "entrance", "name": "Test Entrance", "kind": "entrance", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": [], "has_seating": true, "near_restroom": true, "near_cafe": false },
+    { "id": "hub-a", "name": "Test group A", "kind": "gallery", "floor": "1", "wing": "A", "galleries": ["770", "765", "754"], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": false },
+    { "id": "hub-b", "name": "Test group B", "kind": "gallery", "floor": "2", "wing": "B", "galleries": ["099", "111"], "sensory": ["bright"], "has_seating": false, "near_restroom": false, "near_cafe": true }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "hub-a", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "hub-a", "to": "hub-b", "walk_minutes": 3, "step_free": true, "kind": "elevator", "name": "Test elevator" }
+  ]
+}

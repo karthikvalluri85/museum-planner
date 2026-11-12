@@ -133,7 +133,10 @@ The last command prints the value for `WORKLOAD_IDENTITY_PROVIDER`. `DEPLOY_SERV
 3. **`deploy/gcp-deploy.sh` and both workflows.** Never run. Shell syntax is checked; the gcloud flags are not.
 4. **The Scheduler-to-job call** (step 8 of the deploy script) and decision D05 (Pub/Sub cannot start a job directly). Confirm both against current Cloud Run documentation.
 5. **The live museum adapters.** The fixture path is what tests cover. The first live run against the Met and AIC APIs may hit rate limits or query-parameter mistakes.
-6. **The floor graphs.** Hand-built and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md). Until someone checks them, the app says so on every plan.
+6. **The floor graphs.** Hand-built and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md). Until someone checks them, the app says so on every plan. Known gaps found by comparing the graphs with real API records in the fixtures:
+   - The Met graph was built from a map dated about 2016 to 2020. Live Met records use gallery numbers `341`, `361`, `362`, `363` (the Rockefeller Wing, renumbered when it reopened) and `099`, none of which are in the graph, so objects there cannot be planned yet. Get the current map from metmuseum.org and update `services/ingestion-job/seed/floor_graphs/met.json`.
+   - The Met graph marks no place as near both a restroom and a cafe, and only 4 places with seating, so plans for a young child end near a restroom only and limited-stamina plans get few rest stops.
+   - Three Met areas are stairs-only in the graph because step-free access could not be confirmed: the Greek and Roman mezzanine, the Modern mezzanine, and the Robert Lehman Collection.
 
 ## Costs
 

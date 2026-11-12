@@ -1,0 +1,1492 @@
+{
+  "museum_id": "met",
+  "version": "2026-11-13.1",
+  "source": "The Met Fifth Avenue museum map (official one-page PDF, undated; it still lists The Met Breuer, so it dates from about 2016 to 2020), read 2026-11-13 from a mirror at https://www.newyorkwelcome.net/ecms/met-fifth-avenue-map.pdf. metmuseum.org pages (accessibility guide, interactive map) returned HTTP 429 on 2026-11-13; step-free entry at Fifth Avenue and 81st Street taken from search-result text of https://www.metmuseum.org/visit-guides/accessibility read 2026-11-13.",
+  "verification": {
+    "status": "unverified",
+    "notes": "Gallery numbers, floors, wing placement, elevator icons and the two map notes about step-free access to Asian Art were read from the official Met map PDF (circa 2016 to 2020, mirror copy), and the 81st Street step-free entrance from the Met accessibility page as quoted in search results. Which nodes are adjacent, elevator pairings between floors, and walk times are inferred from the map layout and general knowledge of the building; same-floor connections are assumed step-free unless the map signals otherwise. Nobody has checked this graph on site, and the Rockefeller Wing (galleries 350 to 359) reopened in 2025 after the map was printed.",
+    "verified_on": null
+  },
+  "entrance_node_id": "entrance-81st",
+  "nodes": [
+    {
+      "id": "entrance-81st",
+      "name": "81st Street Entrance (step-free)",
+      "kind": "entrance",
+      "floor": "G",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "entrance-82nd",
+      "name": "82nd Street Main Entrance (Fifth Avenue steps)",
+      "kind": "hub",
+      "floor": "G",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "great-hall",
+      "name": "The Great Hall",
+      "kind": "hub",
+      "floor": "1",
+      "wing": "Lobby",
+      "galleries": [],
+      "sensory": [
+        "loud",
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "egypt-a",
+      "name": "Egyptian Art, galleries 100 to 117",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Egyptian Art",
+      "galleries": [
+        "100",
+        "101",
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114",
+        "115",
+        "116",
+        "117"
+      ],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "egypt-b",
+      "name": "Egyptian Art, galleries 118 to 138",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Egyptian Art",
+      "galleries": [
+        "118",
+        "119",
+        "120",
+        "121",
+        "122",
+        "123",
+        "124",
+        "126",
+        "127",
+        "128",
+        "129",
+        "130",
+        "132",
+        "133",
+        "134",
+        "135",
+        "136",
+        "137",
+        "138"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "dendur",
+      "name": "The Temple of Dendur in The Sackler Wing",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Egyptian Art",
+      "galleries": [
+        "131"
+      ],
+      "sensory": [
+        "bright"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "costume",
+      "name": "The Costume Institute",
+      "kind": "gallery",
+      "floor": "G",
+      "wing": "The Costume Institute",
+      "galleries": [
+        "980",
+        "981"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "greek-a",
+      "name": "Greek and Roman Art, galleries 150 to 161",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Greek and Roman Art",
+      "galleries": [
+        "150",
+        "151",
+        "152",
+        "153",
+        "154",
+        "155",
+        "156",
+        "157",
+        "158",
+        "159",
+        "160",
+        "161"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "greek-court",
+      "name": "Greek and Roman Art, Leon Levy and Shelby White Court and galleries 162 to 169",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Greek and Roman Art",
+      "galleries": [
+        "162",
+        "163",
+        "164",
+        "165",
+        "166",
+        "167",
+        "168",
+        "169"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "greek-mezz",
+      "name": "Greek and Roman Art Mezzanine",
+      "kind": "gallery",
+      "floor": "1M",
+      "wing": "Greek and Roman Art",
+      "galleries": [
+        "170",
+        "171",
+        "172"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "greek-f2",
+      "name": "Greek and Roman Art, Floor 2 (galleries 173 to 176)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Greek and Roman Art",
+      "galleries": [
+        "173",
+        "174",
+        "175",
+        "176"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "aoa",
+      "name": "Arts of Africa, Oceania, and the Americas",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Africa, Oceania, and the Americas",
+      "galleries": [
+        "350",
+        "351",
+        "352",
+        "353",
+        "354",
+        "355",
+        "356",
+        "357",
+        "358",
+        "359",
+        "399"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "modern-f1",
+      "name": "Modern and Contemporary Art, Floor 1",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Modern and Contemporary Art",
+      "galleries": [
+        "900",
+        "901",
+        "902",
+        "903",
+        "904",
+        "905",
+        "906",
+        "907",
+        "908",
+        "909",
+        "910",
+        "911",
+        "912",
+        "913"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "modern-mezz",
+      "name": "Modern and Contemporary Art Mezzanine",
+      "kind": "gallery",
+      "floor": "1M",
+      "wing": "Modern and Contemporary Art",
+      "galleries": [
+        "914",
+        "915",
+        "916"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "modern-f2",
+      "name": "Modern and Contemporary Art, Floor 2",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Modern and Contemporary Art",
+      "galleries": [
+        "917",
+        "918",
+        "919",
+        "920",
+        "921",
+        "922",
+        "923",
+        "924",
+        "925"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "roof",
+      "name": "Roof Garden (seasonal)",
+      "kind": "gallery",
+      "floor": "5",
+      "wing": "Modern and Contemporary Art",
+      "galleries": [
+        "926"
+      ],
+      "sensory": [
+        "bright",
+        "crowded"
+      ],
+      "has_seating": true,
+      "near_restroom": false,
+      "near_cafe": true
+    },
+    {
+      "id": "exhibitions-f2",
+      "name": "Exhibition Galleries 899 and 999",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Exhibitions",
+      "galleries": [
+        "899",
+        "999"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "exhibition-199",
+      "name": "Exhibition Gallery 199",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Exhibitions",
+      "galleries": [
+        "199"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "esda-west",
+      "name": "European Sculpture and Decorative Arts with the Petrie Court",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "European Sculpture and Decorative Arts",
+      "galleries": [
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556"
+      ],
+      "sensory": [
+        "bright"
+      ],
+      "has_seating": true,
+      "near_restroom": false,
+      "near_cafe": true
+    },
+    {
+      "id": "esda-north",
+      "name": "European Sculpture and Decorative Arts, galleries 509 to 527",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "European Sculpture and Decorative Arts",
+      "galleries": [
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "esda-east",
+      "name": "European Sculpture and Decorative Arts, galleries 500 to 508",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "European Sculpture and Decorative Arts",
+      "galleries": [
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "esda-f2",
+      "name": "European Sculpture and Decorative Arts, Floor 2 (gallery 535)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "European Sculpture and Decorative Arts",
+      "galleries": [
+        "535"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "medieval",
+      "name": "Medieval Art",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Medieval Art",
+      "galleries": [
+        "300",
+        "301",
+        "302",
+        "303",
+        "304",
+        "305",
+        "306",
+        "307"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "lehman",
+      "name": "Robert Lehman Collection",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Robert Lehman Collection",
+      "galleries": [
+        "950",
+        "951",
+        "952",
+        "953",
+        "954",
+        "955",
+        "956",
+        "957",
+        "958",
+        "959",
+        "960",
+        "961",
+        "962",
+        "963",
+        "964",
+        "965"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "arms-armor",
+      "name": "Arms and Armor",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "Arms and Armor",
+      "galleries": [
+        "370",
+        "371",
+        "372",
+        "373",
+        "374",
+        "375",
+        "376",
+        "377",
+        "378",
+        "379",
+        "380"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "aw-court",
+      "name": "The American Wing, Charles Engelhard Court",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "The American Wing",
+      "galleries": [
+        "700",
+        "701",
+        "702"
+      ],
+      "sensory": [
+        "bright"
+      ],
+      "has_seating": true,
+      "near_restroom": false,
+      "near_cafe": true
+    },
+    {
+      "id": "aw-f1",
+      "name": "The American Wing, Floor 1 period rooms and galleries",
+      "kind": "gallery",
+      "floor": "1",
+      "wing": "The American Wing",
+      "galleries": [
+        "723",
+        "724",
+        "725",
+        "726",
+        "727",
+        "728",
+        "729",
+        "730",
+        "731",
+        "732",
+        "733",
+        "734",
+        "735",
+        "736",
+        "737",
+        "738",
+        "739",
+        "740",
+        "741",
+        "742",
+        "743",
+        "744",
+        "745",
+        "746"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "aw-mezz",
+      "name": "The American Wing Mezzanine",
+      "kind": "gallery",
+      "floor": "1M",
+      "wing": "The American Wing",
+      "galleries": [
+        "707",
+        "773",
+        "774"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "aw-f2-a",
+      "name": "The American Wing, Floor 2 (around the court)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "The American Wing",
+      "galleries": [
+        "703",
+        "704",
+        "705",
+        "706",
+        "717",
+        "718",
+        "719",
+        "720",
+        "721",
+        "722",
+        "747",
+        "748",
+        "749",
+        "750"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "aw-f2-b",
+      "name": "The American Wing, Floor 2 (galleries 751 to 772)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "The American Wing",
+      "galleries": [
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "761",
+        "762",
+        "763",
+        "764",
+        "765",
+        "766",
+        "767",
+        "768",
+        "769",
+        "770",
+        "771",
+        "772"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "aw-f3",
+      "name": "The American Wing, Floor 3",
+      "kind": "gallery",
+      "floor": "3",
+      "wing": "The American Wing",
+      "galleries": [
+        "708",
+        "709",
+        "710",
+        "711",
+        "712",
+        "713",
+        "714",
+        "715",
+        "716"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "balcony",
+      "name": "Great Hall Balcony",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Lobby",
+      "galleries": [
+        "200",
+        "201"
+      ],
+      "sensory": [],
+      "has_seating": true,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "paintings-a",
+      "name": "European Paintings 1250 to 1800, galleries 600 to 622",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "European Paintings",
+      "galleries": [
+        "600",
+        "601",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "607",
+        "608",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "614",
+        "615",
+        "616",
+        "617",
+        "618",
+        "619",
+        "620",
+        "621",
+        "622"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "paintings-b",
+      "name": "European Paintings 1250 to 1800, galleries 623 to 644",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "European Paintings",
+      "galleries": [
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "628",
+        "629",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "nineteenth",
+      "name": "19th- and Early 20th-Century European Paintings and Sculpture",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "19th-Century European Paintings",
+      "galleries": [
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "805",
+        "806",
+        "807",
+        "808",
+        "809",
+        "810",
+        "811",
+        "812",
+        "813",
+        "814",
+        "815",
+        "816",
+        "817",
+        "818",
+        "819",
+        "820",
+        "821",
+        "822",
+        "823",
+        "824",
+        "825",
+        "826",
+        "827",
+        "828",
+        "829",
+        "830"
+      ],
+      "sensory": [
+        "crowded"
+      ],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "prints-photos",
+      "name": "Drawings and Prints, and Photographs",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Drawings, Prints and Photographs",
+      "galleries": [
+        "690",
+        "691",
+        "692",
+        "693",
+        "850",
+        "851",
+        "852"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": true,
+      "near_cafe": false
+    },
+    {
+      "id": "musical",
+      "name": "Musical Instruments",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Musical Instruments",
+      "galleries": [
+        "680",
+        "681",
+        "682",
+        "683",
+        "684"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "near-east",
+      "name": "Ancient Near Eastern Art",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Ancient Near Eastern Art",
+      "galleries": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "404",
+        "405",
+        "406"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "islamic",
+      "name": "Art of the Arab Lands, Turkey, Iran, Central Asia, and Later South Asia",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Islamic Art",
+      "galleries": [
+        "450",
+        "451",
+        "452",
+        "453",
+        "454",
+        "455",
+        "456",
+        "457",
+        "458",
+        "459",
+        "460",
+        "461",
+        "462",
+        "463",
+        "464"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asian-f2-west",
+      "name": "Asian Art, Floor 2 (galleries 202 to 218 and 233 to 239)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Asian Art",
+      "galleries": [
+        "202",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "210",
+        "211",
+        "212",
+        "213",
+        "214",
+        "215",
+        "216",
+        "217",
+        "218",
+        "233",
+        "234",
+        "235",
+        "236",
+        "237",
+        "238",
+        "239"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asian-f2-east",
+      "name": "Asian Art, Floor 2 (galleries 223 to 232 and 240 to 250)",
+      "kind": "gallery",
+      "floor": "2",
+      "wing": "Asian Art",
+      "galleries": [
+        "223",
+        "224",
+        "225",
+        "226",
+        "227",
+        "228",
+        "229",
+        "230",
+        "231",
+        "232",
+        "240",
+        "241",
+        "242",
+        "243",
+        "244",
+        "245",
+        "246",
+        "247",
+        "248",
+        "249",
+        "250"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asian-f3-a",
+      "name": "Asian Art, Floor 3 (galleries 219 to 222)",
+      "kind": "gallery",
+      "floor": "3",
+      "wing": "Asian Art",
+      "galleries": [
+        "219",
+        "220",
+        "221",
+        "222"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    },
+    {
+      "id": "asian-f3-b",
+      "name": "Asian Art, Floor 3 (galleries 251 to 253)",
+      "kind": "gallery",
+      "floor": "3",
+      "wing": "Asian Art",
+      "galleries": [
+        "251",
+        "252",
+        "253"
+      ],
+      "sensory": [],
+      "has_seating": false,
+      "near_restroom": false,
+      "near_cafe": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "entrance-81st",
+      "to": "greek-a",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator from the 81st Street entrance up to Floor 1 (south end of the Great Hall, by the Greek and Roman galleries)"
+    },
+    {
+      "from": "entrance-82nd",
+      "to": "great-hall",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Fifth Avenue front steps at the 82nd Street main entrance"
+    },
+    {
+      "from": "great-hall",
+      "to": "greek-a",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "greek-a",
+      "to": "greek-court",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "greek-court",
+      "to": "greek-mezz",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Stairs to the Greek and Roman Art Mezzanine (galleries 170 to 172)"
+    },
+    {
+      "from": "greek-court",
+      "to": "aoa",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "aoa",
+      "to": "modern-f1",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "aoa",
+      "to": "esda-west",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "modern-f1",
+      "to": "esda-west",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "modern-f1",
+      "to": "modern-mezz",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Stairs to the Modern and Contemporary Art Mezzanine (galleries 914 to 916); ask a security officer for the accessible route"
+    },
+    {
+      "from": "modern-f1",
+      "to": "roof",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Roof Garden elevator in Modern and Contemporary Art, Floor 1"
+    },
+    {
+      "from": "esda-west",
+      "to": "exhibition-199",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-west",
+      "to": "esda-north",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-west",
+      "to": "medieval",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-north",
+      "to": "medieval",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-east",
+      "to": "medieval",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-east",
+      "to": "esda-north",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "esda-east",
+      "to": "arms-armor",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "great-hall",
+      "to": "medieval",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "medieval",
+      "to": "lehman",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "level",
+      "name": "Unconfirmed connection between Medieval Art and the Robert Lehman Collection (may have steps)"
+    },
+    {
+      "from": "great-hall",
+      "to": "egypt-a",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "egypt-a",
+      "to": "egypt-b",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "egypt-b",
+      "to": "dendur",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "dendur",
+      "to": "aw-f1",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "egypt-b",
+      "to": "costume",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator in Egyptian Art down to The Costume Institute (ground floor, galleries 980 and 981)"
+    },
+    {
+      "from": "arms-armor",
+      "to": "aw-court",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "aw-court",
+      "to": "aw-f1",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "aw-court",
+      "to": "aw-mezz",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "The American Wing elevator by the Engelhard Court"
+    },
+    {
+      "from": "aw-court",
+      "to": "aw-mezz",
+      "walk_minutes": 1,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Staircase in the Charles Engelhard Court, The American Wing"
+    },
+    {
+      "from": "aw-mezz",
+      "to": "aw-f2-a",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "The American Wing elevator by the Engelhard Court"
+    },
+    {
+      "from": "aw-court",
+      "to": "aw-f2-a",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Staircase in the Charles Engelhard Court, The American Wing"
+    },
+    {
+      "from": "aw-f2-a",
+      "to": "aw-f3",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "The American Wing elevator by the Engelhard Court"
+    },
+    {
+      "from": "aw-f2-a",
+      "to": "aw-f3",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Stairs to The American Wing, Floor 3 (galleries 708 to 716)"
+    },
+    {
+      "from": "great-hall",
+      "to": "balcony",
+      "walk_minutes": 2,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Great Hall Grand Staircase"
+    },
+    {
+      "from": "great-hall",
+      "to": "balcony",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator beside The Met Store off the Great Hall"
+    },
+    {
+      "from": "greek-court",
+      "to": "near-east",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 163 (Greek and Roman Art) to Floor 2"
+    },
+    {
+      "from": "egypt-a",
+      "to": "asian-f2-east",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator in Egyptian Art near gallery 104 (step-free route to Asian Art, Floor 2)"
+    },
+    {
+      "from": "arms-armor",
+      "to": "asian-f2-east",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 702, between Arms and Armor and The American Wing (step-free route to Asian Art, Floor 2)"
+    },
+    {
+      "from": "arms-armor",
+      "to": "musical",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 702, between Arms and Armor and The American Wing (to Musical Instruments, Floor 2)"
+    },
+    {
+      "from": "balcony",
+      "to": "paintings-a",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "paintings-a",
+      "to": "paintings-b",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "paintings-a",
+      "to": "musical",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "musical",
+      "to": "aw-f2-a",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "aw-f2-a",
+      "to": "aw-f2-b",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "balcony",
+      "to": "prints-photos",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "prints-photos",
+      "to": "esda-f2",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "prints-photos",
+      "to": "paintings-b",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "prints-photos",
+      "to": "nineteenth",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "nineteenth",
+      "to": "modern-f2",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "nineteenth",
+      "to": "exhibitions-f2",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "nineteenth",
+      "to": "islamic",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "balcony",
+      "to": "near-east",
+      "walk_minutes": 2,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "near-east",
+      "to": "greek-f2",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "near-east",
+      "to": "islamic",
+      "walk_minutes": 1,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "balcony",
+      "to": "asian-f2-west",
+      "walk_minutes": 1,
+      "step_free": false,
+      "kind": "stairs",
+      "name": "Steps between the Great Hall Balcony and Asian Art (the map sends step-free visitors to the elevators in Egyptian Art or Arms and Armor)"
+    },
+    {
+      "from": "asian-f2-west",
+      "to": "asian-f2-east",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "level",
+      "name": null
+    },
+    {
+      "from": "asian-f2-east",
+      "to": "asian-f3-a",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 250 to Asian Art, Floor 3 (galleries 219 to 222)"
+    },
+    {
+      "from": "asian-f2-east",
+      "to": "asian-f3-b",
+      "walk_minutes": 3,
+      "step_free": true,
+      "kind": "elevator",
+      "name": "Elevator near gallery 248 to Asian Art, Floor 3 (galleries 251 to 253)"
+    }
+  ]
+}
