@@ -1,0 +1,14 @@
+{
+  "museum_id": "demo",
+  "version": "2026-11-13.1",
+  "source": "Synthetic example. Not a real building.",
+  "verification": { "status": "unverified", "notes": null },
+  "entrance_node_id": "entrance",
+  "nodes": [
+    { "id": "entrance", "name": "Main Entrance", "kind": "entrance", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": [], "has_seating": true, "near_restroom": true, "near_cafe": false },
+    { "id": "b-wing", "name": "Wing B galleries", "kind": "gallery", "floor": "2", "wing": "Wing B", "galleries": ["B1"], "sensory": [], "has_seating": false, "near_restroom": false, "near_cafe": true }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "b-wing", "walk_minutes": 3, "step_free": false, "kind": "stairs", "name": null }
+  ]
+}

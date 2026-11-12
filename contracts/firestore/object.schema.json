@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/firestore/object.schema.json",
+  "title": "NormalizedObject",
+  "description": "One museum object in the schema every museum is normalized into. An object with no gallery in the source data is never written: it is not plannable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "museum_id", "source_id", "title", "artist", "date", "tags", "gallery", "image_url", "dwell_minutes", "size_class", "is_highlight"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,30}:[A-Za-z0-9._-]+$",
+      "description": "museum_id + ':' + source_id."
+    },
+    "museum_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+    "source_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "artist": { "type": ["string", "null"] },
+    "date": { "type": ["string", "null"], "description": "Display date as the museum writes it." },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "pattern": "^[^A-Z]+$" },
+      "description": "Lowercase. Drawn only from the source record: subject tags, department, classification, culture, period, object type."
+    },
+    "department": { "type": ["string", "null"] },
+    "medium": { "type": ["string", "null"] },
+    "description": { "type": ["string", "null"], "description": "Short text from the source record, if it has one." },
+    "gallery": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9 .-]{0,15}$",
+      "description": "Gallery number exactly as the museum's API returns it."
+    },
+    "image_url": { "type": ["string", "null"] },
+    "source_url": { "type": ["string", "null"] },
+    "dwell_minutes": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "size_class": { "enum": ["small", "medium", "large", "monumental"] },
+    "is_highlight": { "type": "boolean" }
+  }
+}

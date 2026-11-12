@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/upstream/met-object.schema.json",
+  "title": "MetObject",
+  "description": "The subset of GET https://collectionapi.metmuseum.org/public/collection/v1/objects/{id} the Met adapter depends on. Extra fields are allowed and ignored. We do not own this API; this schema is what we fail fast on if it changes.",
+  "type": "object",
+  "required": ["objectID", "title", "GalleryNumber"],
+  "properties": {
+    "objectID": { "type": "integer" },
+    "isHighlight": { "type": "boolean" },
+    "primaryImage": { "type": "string" },
+    "primaryImageSmall": { "type": "string" },
+    "department": { "type": "string" },
+    "objectName": { "type": "string" },
+    "title": { "type": "string" },
+    "culture": { "type": "string" },
+    "period": { "type": "string" },
+    "artistDisplayName": { "type": "string" },
+    "objectDate": { "type": "string" },
+    "medium": { "type": "string" },
+    "dimensions": { "type": "string" },
+    "measurements": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "elementName": { "type": ["string", "null"] },
+          "elementMeasurements": { "type": ["object", "null"] }
+        }
+      }
+    },
+    "classification": { "type": "string" },
+    "objectURL": { "type": "string" },
+    "tags": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["term"],
+        "properties": { "term": { "type": "string" } }
+      }
+    },
+    "GalleryNumber": { "type": "string", "description": "Empty string when the object is not on view." }
+  }
+}

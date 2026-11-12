@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/firestore/museum.schema.json",
+  "title": "Museum",
+  "description": "Firestore document museums/{museum_id}. Written last in an ingest run, so its chunk_count is the pointer readers trust.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "city", "source", "data_notice", "object_count", "skipped_no_gallery_count", "chunk_count", "facets", "last_ingested_at", "ingest_run_id"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+    "name": { "type": "string", "minLength": 1 },
+    "city": { "type": "string" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["api_name", "api_base_url", "license"],
+      "properties": {
+        "api_name": { "type": "string", "minLength": 1 },
+        "api_base_url": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 }
+      }
+    },
+    "data_notice": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Must say the data is public and the museum has not reviewed the plans."
+    },
+    "object_count": { "type": "integer", "minimum": 0, "description": "Plannable objects written (those with a gallery)." },
+    "skipped_no_gallery_count": { "type": "integer", "minimum": 0 },
+    "chunk_count": { "type": "integer", "minimum": 0 },
+    "facets": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tag", "label", "count"],
+        "properties": {
+          "tag": { "type": "string", "minLength": 1, "pattern": "^[^A-Z]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "last_ingested_at": { "type": "string", "format": "date-time" },
+    "ingest_run_id": { "type": "string", "minLength": 1 }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "status": "no_step_free_route",
+  "museum": { "id": "demo", "name": "Demo Museum (synthetic example)" },
+  "plan": null,
+  "alternative": {
+    "start": {
+      "node_id": "entrance", "node_name": "Main Entrance", "walk_minutes_to_first": 3,
+      "route_to_first": [
+        { "from_node_id": "entrance", "to_node_id": "b-wing", "from_name": "Main Entrance", "to_name": "Wing B galleries", "walk_minutes": 3, "step_free": false, "kind": "stairs", "name": "Grand Staircase" }
+      ]
+    },
+    "stops": [
+      {
+        "order": 1, "kind": "object", "gallery": "B1", "node_id": "b-wing", "node_name": "Wing B galleries", "floor": "2", "wing": "Wing B",
+        "object": { "id": "demo:2001", "title": "Equestrian Armor (synthetic example)", "artist": null, "date": "ca. 1550", "image_url": null, "source_url": null, "tags": ["armor", "horses", "arms and armor", "steel"], "size_class": "monumental", "is_highlight": true },
+        "why": "Matches your interest in armor: it is tagged armor and horses.",
+        "grounding": { "matched_tags": ["armor"], "fields": ["object.tags"] },
+        "dwell_minutes": 6, "walk_minutes_to_next": null, "route_to_next": []
+      }
+    ],
+    "totals": { "dwell_minutes": 6, "walking_minutes": 3, "total_minutes": 9, "time_budget_minutes": 45 },
+    "step_free": false,
+    "stairs": [
+      { "name": "Grand Staircase", "kind": "stairs", "from_node_id": "entrance", "to_node_id": "b-wing", "from_name": "Main Entrance", "to_name": "Wing B galleries" }
+    ],
+    "wings": ["Wing B"],
+    "warnings": []
+  },
+  "message": "No step-free route reaches anything matching your interests. The closest alternative uses the Grand Staircase between Main Entrance and Wing B galleries.",
+  "applied": {
+    "constraints": { "step_free": true, "limited_stamina": false, "max_walking_minutes": null, "with_young_child": false, "low_sensory": false, "short_visit": true },
+    "interests_matched": ["armor"],
+    "interests_unmatched": ["animals"]
+  },
+  "notices": [
+    "Built from the museum's public data. The museum has not reviewed this plan.",
+    "Floor data for this museum is hand-built and unverified. Confirm elevators and step-free routes with museum staff."
+  ]
+}

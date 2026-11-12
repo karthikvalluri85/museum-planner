@@ -1,0 +1,17 @@
+{
+  "museum_id": "demo",
+  "version": "2026-11-13.1",
+  "source": "Synthetic example. Not a real building.",
+  "verification": { "status": "unverified", "notes": "Example data.", "verified_on": null },
+  "entrance_node_id": "entrance",
+  "nodes": [
+    { "id": "entrance", "name": "Main Entrance", "kind": "entrance", "floor": "1", "wing": "Lobby", "galleries": [], "sensory": ["loud", "crowded"], "has_seating": true, "near_restroom": true, "near_cafe": false },
+    { "id": "a-wing", "name": "Wing A galleries", "kind": "gallery", "floor": "1", "wing": "Wing A", "galleries": ["A1", "A2"], "sensory": [], "has_seating": true, "near_restroom": false, "near_cafe": false },
+    { "id": "b-wing", "name": "Wing B galleries", "kind": "gallery", "floor": "2", "wing": "Wing B", "galleries": ["B1"], "sensory": ["bright"], "has_seating": false, "near_restroom": false, "near_cafe": true }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "a-wing", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null },
+    { "from": "entrance", "to": "b-wing", "walk_minutes": 3, "step_free": false, "kind": "stairs", "name": "Grand Staircase" },
+    { "from": "a-wing", "to": "b-wing", "walk_minutes": 4, "step_free": true, "kind": "elevator", "name": "Elevator beside gallery A2" }
+  ]
+}

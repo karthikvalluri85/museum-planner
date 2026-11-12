@@ -1,0 +1,116 @@
+{
+  "system": "museum-planner",
+  "services": [
+    {
+      "name": "planner",
+      "kind": "cloud-run-service",
+      "path": "services/planner",
+      "summary": "Stateless HTTP API that scores objects and routes a plan; also serves the static web frontend.",
+      "provides": ["contracts/planner/openapi.yaml"],
+      "consumes": [
+        "contracts/firestore/museum.schema.json",
+        "contracts/firestore/object-chunk.schema.json",
+        "contracts/firestore/floor-graph.schema.json"
+      ],
+      "ingress": "all",
+      "auth": "allow-unauthenticated",
+      "scaling": {
+        "min_instances": 0,
+        "max_instances": 3,
+        "concurrency": 40,
+        "cpu": "1",
+        "memory": "512Mi",
+        "timeout_seconds": 30
+      },
+      "failure_policy": "No retries server-side: every request is idempotent, the browser retries. Firestore read failure returns 503 store_unavailable. A museum's objects and graph are cached in memory for CACHE_TTL_SECONDS.",
+      "env": [
+        { "name": "PORT", "required": false, "default": "8080", "description": "Injected by Cloud Run." },
+        { "name": "STORE_BACKEND", "required": false, "default": "firestore", "description": "firestore or file. file is for offline tests only." },
+        { "name": "GOOGLE_CLOUD_PROJECT", "required": true, "default": null, "description": "Project that owns the Firestore database. Required when STORE_BACKEND=firestore." },
+        { "name": "FIRESTORE_DATABASE", "required": false, "default": "(default)", "description": "Firestore database id." },
+        { "name": "FIRESTORE_EMULATOR_HOST", "required": false, "default": null, "description": "Local only. Points the client at the emulator." },
+        { "name": "FILE_STORE_DIR", "required": false, "default": null, "description": "Local only. Directory read when STORE_BACKEND=file." },
+        { "name": "CACHE_TTL_SECONDS", "required": false, "default": "600", "description": "How long an instance keeps a museum in memory." }
+      ],
+      "secrets": [],
+      "iam": {
+        "service_account": "planner-sa",
+        "roles": ["roles/datastore.viewer"],
+        "invokers": ["allUsers"]
+      }
+    },
+    {
+      "name": "ingestion-job",
+      "kind": "cloud-run-job",
+      "path": "services/ingestion-job",
+      "summary": "Runs to completion: drains ingest-museum messages, pulls each named museum's open API, normalizes, writes Firestore.",
+      "provides": [
+        "contracts/firestore/museum.schema.json",
+        "contracts/firestore/object.schema.json",
+        "contracts/firestore/object-chunk.schema.json",
+        "contracts/firestore/floor-graph.schema.json"
+      ],
+      "consumes": [
+        "contracts/events/ingest-museum.schema.json",
+        "contracts/upstream/met-object.schema.json",
+        "contracts/upstream/aic-artwork.schema.json"
+      ],
+      "ingress": "none",
+      "auth": "iam",
+      "scaling": {
+        "tasks": 1,
+        "parallelism": 1,
+        "max_retries": 1,
+        "cpu": "1",
+        "memory": "512Mi",
+        "task_timeout_seconds": 1800
+      },
+      "failure_policy": "A message is acked only after its museum is fully written. Invalid messages are logged and acked so they cannot poison the queue. Any museum failure makes the job exit non-zero; Cloud Run retries the task once and unacked messages are redelivered. The museum document is written last, so a failed run never points readers at half-written chunks.",
+      "env": [
+        { "name": "STORE_BACKEND", "required": false, "default": "firestore", "description": "firestore or file. file is for offline tests only." },
+        { "name": "GOOGLE_CLOUD_PROJECT", "required": true, "default": null, "description": "Project that owns Firestore and Pub/Sub. Required unless STORE_BACKEND=file and MUSEUM_ID is set." },
+        { "name": "FIRESTORE_DATABASE", "required": false, "default": "(default)", "description": "Firestore database id." },
+        { "name": "PUBSUB_SUBSCRIPTION", "required": false, "default": "ingest-museum-job", "description": "Pull subscription on topic ingest-museum." },
+        { "name": "MUSEUM_ID", "required": false, "default": null, "description": "If set, ingest only this museum and do not touch Pub/Sub." },
+        { "name": "SOURCE_MODE", "required": false, "default": "live", "description": "live calls the museum API. fixture reads bundled raw payloads." },
+        { "name": "MAX_OBJECTS", "required": false, "default": "1500", "description": "Cap on plannable objects written per museum." },
+        { "name": "REFRESH_AFTER_HOURS", "required": false, "default": "168", "description": "Museums ingested longer ago than this are refreshed on any run. 0 disables." },
+        { "name": "FIRESTORE_EMULATOR_HOST", "required": false, "default": null, "description": "Local only." },
+        { "name": "PUBSUB_EMULATOR_HOST", "required": false, "default": null, "description": "Local only." },
+        { "name": "FILE_STORE_DIR", "required": false, "default": null, "description": "Local only. Directory written when STORE_BACKEND=file." }
+      ],
+      "secrets": [],
+      "iam": {
+        "service_account": "ingestion-sa",
+        "roles": ["roles/datastore.user", "roles/pubsub.subscriber"],
+        "invokers": ["serviceAccount:scheduler-sa"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "ingest-museum",
+      "kind": "pubsub-topic",
+      "contract": "contracts/events/ingest-museum.schema.json",
+      "notes": "Publishing a message that names a museum id adds or refreshes that museum. No redeploy."
+    },
+    {
+      "name": "ingest-museum-job",
+      "kind": "pubsub-subscription",
+      "contract": "contracts/events/ingest-museum.schema.json",
+      "notes": "Pull subscription on ingest-museum, ack deadline 600s, drained by ingestion-job at the start of every execution."
+    },
+    {
+      "name": "(default)",
+      "kind": "firestore-database",
+      "contract": "contracts/firestore/museum.schema.json",
+      "notes": "Native mode. Collections: museums/{id}, museums/{id}/object_chunks/{nnnn}, floor_graphs/{id}. ingestion-job is the only writer; planner only reads."
+    },
+    {
+      "name": "ingest-tick",
+      "kind": "cloud-scheduler-job",
+      "contract": null,
+      "notes": "Every 10 minutes, starts an ingestion-job execution as scheduler-sa. An execution with nothing to do exits in seconds."
+    }
+  ]
+}

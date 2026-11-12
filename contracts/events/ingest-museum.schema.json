@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/events/ingest-museum.schema.json",
+  "title": "IngestMuseumMessage",
+  "description": "JSON body (UTF-8) of a message on Pub/Sub topic ingest-museum. Publishing one is how a museum is added or refreshed. No message attributes are required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["museum_id"],
+  "properties": {
+    "museum_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,30}$",
+      "description": "Must name a museum the ingestion job has an adapter and a floor graph for."
+    },
+    "reason": { "enum": ["add", "refresh"], "default": "add" },
+    "max_objects": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000,
+      "description": "Overrides the job's MAX_OBJECTS for this run."
+    },
+    "requested_at": { "type": "string", "format": "date-time" }
+  }
+}

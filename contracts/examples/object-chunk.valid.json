@@ -1,0 +1,24 @@
+{
+  "museum_id": "demo",
+  "chunk_index": 0,
+  "ingest_run_id": "2026-11-13T09-00-00Z-demo",
+  "objects": [
+    {
+      "id": "demo:1001", "museum_id": "demo", "source_id": "1001",
+      "title": "Bronze Cat (synthetic example)", "artist": null, "date": "ca. 600 BCE",
+      "tags": ["cats", "animals", "egyptian art", "bronze", "sculpture"],
+      "department": "Egyptian Art", "medium": "Bronze", "description": null,
+      "gallery": "A2", "image_url": "https://example.org/images/1001.jpg",
+      "source_url": "https://example.org/objects/1001",
+      "dwell_minutes": 4, "size_class": "small", "is_highlight": true
+    },
+    {
+      "id": "demo:2001", "museum_id": "demo", "source_id": "2001",
+      "title": "Equestrian Armor (synthetic example)", "artist": null, "date": "ca. 1550",
+      "tags": ["armor", "horses", "arms and armor", "steel"],
+      "department": "Arms and Armor", "medium": "Steel", "description": null,
+      "gallery": "B1", "image_url": null, "source_url": null,
+      "dwell_minutes": 6, "size_class": "monumental", "is_highlight": true
+    }
+  ]
+}

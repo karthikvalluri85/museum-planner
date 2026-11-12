@@ -1,0 +1,18 @@
+{
+  "id": "demo:1001",
+  "museum_id": "demo",
+  "source_id": "1001",
+  "title": "Bronze Cat (synthetic example)",
+  "artist": null,
+  "date": "ca. 600 BCE",
+  "tags": ["cats", "animals", "egyptian art", "bronze", "sculpture"],
+  "department": "Egyptian Art",
+  "medium": "Bronze",
+  "description": null,
+  "gallery": "A2",
+  "image_url": "https://example.org/images/1001.jpg",
+  "source_url": "https://example.org/objects/1001",
+  "dwell_minutes": 4,
+  "size_class": "small",
+  "is_highlight": true
+}

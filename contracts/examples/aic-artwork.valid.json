@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "title": "Synthetic example record in the shape of the AIC API",
+  "artist_display": "Unknown",
+  "artist_title": null,
+  "date_display": "1900",
+  "medium_display": "Oil on canvas",
+  "dimensions": "50 x 60 cm",
+  "is_on_view": true,
+  "gallery_id": 1,
+  "gallery_title": "Gallery 1",
+  "image_id": null,
+  "department_title": "Example Department",
+  "classification_title": "painting",
+  "style_title": null,
+  "subject_titles": ["landscapes"],
+  "term_titles": ["oil paint", "landscapes"],
+  "short_description": null,
+  "is_boosted": false
+}

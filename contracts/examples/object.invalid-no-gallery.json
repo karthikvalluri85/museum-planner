@@ -1,0 +1,14 @@
+{
+  "id": "demo:1002",
+  "museum_id": "demo",
+  "source_id": "1002",
+  "title": "Object in storage (synthetic example)",
+  "artist": null,
+  "date": null,
+  "tags": [],
+  "gallery": "",
+  "image_url": null,
+  "dwell_minutes": 3,
+  "size_class": "small",
+  "is_highlight": false
+}

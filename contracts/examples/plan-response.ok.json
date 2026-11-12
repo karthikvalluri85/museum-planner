@@ -1,0 +1,47 @@
+{
+  "status": "ok",
+  "museum": { "id": "demo", "name": "Demo Museum (synthetic example)" },
+  "plan": {
+    "start": {
+      "node_id": "entrance", "node_name": "Main Entrance", "walk_minutes_to_first": 2,
+      "route_to_first": [
+        { "from_node_id": "entrance", "to_node_id": "a-wing", "from_name": "Main Entrance", "to_name": "Wing A galleries", "walk_minutes": 2, "step_free": true, "kind": "level", "name": null }
+      ]
+    },
+    "stops": [
+      {
+        "order": 1, "kind": "object", "gallery": "A2", "node_id": "a-wing", "node_name": "Wing A galleries", "floor": "1", "wing": "Wing A",
+        "object": { "id": "demo:1001", "title": "Bronze Cat (synthetic example)", "artist": null, "date": "ca. 600 BCE", "image_url": "https://example.org/images/1001.jpg", "source_url": "https://example.org/objects/1001", "tags": ["cats", "animals", "egyptian art", "bronze", "sculpture"], "size_class": "small", "is_highlight": true },
+        "why": "Matches your interest in animals: it is tagged cats and animals, and it is one of the museum's highlights.",
+        "grounding": { "matched_tags": ["animals"], "fields": ["object.tags", "object.is_highlight"] },
+        "dwell_minutes": 4, "walk_minutes_to_next": 4,
+        "route_to_next": [
+          { "from_node_id": "a-wing", "to_node_id": "b-wing", "from_name": "Wing A galleries", "to_name": "Wing B galleries", "walk_minutes": 4, "step_free": true, "kind": "elevator", "name": "Elevator beside gallery A2" }
+        ]
+      },
+      {
+        "order": 2, "kind": "object", "gallery": "B1", "node_id": "b-wing", "node_name": "Wing B galleries", "floor": "2", "wing": "Wing B",
+        "object": { "id": "demo:2001", "title": "Equestrian Armor (synthetic example)", "artist": null, "date": "ca. 1550", "image_url": null, "source_url": null, "tags": ["armor", "horses", "arms and armor", "steel"], "size_class": "monumental", "is_highlight": true },
+        "why": "Matches your interest in armor: it is tagged armor and horses.",
+        "grounding": { "matched_tags": ["armor"], "fields": ["object.tags"] },
+        "dwell_minutes": 6, "walk_minutes_to_next": null, "route_to_next": []
+      }
+    ],
+    "totals": { "dwell_minutes": 10, "walking_minutes": 6, "total_minutes": 16, "time_budget_minutes": 45 },
+    "step_free": true,
+    "stairs": [],
+    "wings": ["Wing A", "Wing B"],
+    "warnings": []
+  },
+  "alternative": null,
+  "message": null,
+  "applied": {
+    "constraints": { "step_free": true, "limited_stamina": false, "max_walking_minutes": null, "with_young_child": false, "low_sensory": false, "short_visit": true },
+    "interests_matched": ["animals", "armor"],
+    "interests_unmatched": []
+  },
+  "notices": [
+    "Built from the museum's public data. The museum has not reviewed this plan.",
+    "Floor data for this museum is hand-built and unverified. Confirm elevators and step-free routes with museum staff."
+  ]
+}

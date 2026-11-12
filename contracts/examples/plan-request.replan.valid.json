@@ -1,0 +1,9 @@
+{
+  "museum_id": "demo",
+  "interests": ["animals", "armor"],
+  "time_budget_minutes": 20,
+  "constraints": { "step_free": true },
+  "current_gallery": "A2",
+  "exclude_object_ids": ["demo:1001"],
+  "skip_wings": ["Wing A"]
+}

@@ -1,0 +1,1 @@
+{ "museum_id": "demo", "interests": ["animals"], "time_budget_minutes": 5, "constraints": { "wheelchair": true } }

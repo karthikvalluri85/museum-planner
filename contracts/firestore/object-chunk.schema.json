@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/firestore/object-chunk.schema.json",
+  "title": "ObjectChunk",
+  "description": "Firestore document museums/{museum_id}/object_chunks/{chunk_index as 4 digits}. Objects are packed into chunks so a planner cold start costs a handful of document reads, not one per object.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["museum_id", "chunk_index", "ingest_run_id", "objects"],
+  "properties": {
+    "museum_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+    "chunk_index": { "type": "integer", "minimum": 0 },
+    "ingest_run_id": { "type": "string", "minLength": 1 },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 300,
+      "items": { "$ref": "object.schema.json" }
+    }
+  }
+}

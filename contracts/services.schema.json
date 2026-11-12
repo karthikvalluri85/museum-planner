@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/services.schema.json",
+  "title": "ServiceCatalog",
+  "description": "Shape of contracts/services.json: every deployable, the contracts it provides and consumes, its environment, secrets, IAM, scaling, and failure policy.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["system", "services", "resources"],
+  "properties": {
+    "system": { "type": "string", "minLength": 1 },
+    "services": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/service" }
+    },
+    "resources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/resource" }
+    }
+  },
+  "$defs": {
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "path", "summary", "provides", "consumes", "ingress", "auth", "scaling", "failure_policy", "env", "secrets", "iam"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+        "kind": { "enum": ["cloud-run-service", "cloud-run-job"] },
+        "path": { "type": "string", "pattern": "^services/[a-z][a-z0-9-]+$" },
+        "summary": { "type": "string", "minLength": 10 },
+        "provides": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^contracts/" } },
+        "consumes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^contracts/" } },
+        "ingress": { "enum": ["all", "internal", "internal-and-cloud-load-balancing", "none"] },
+        "auth": { "enum": ["allow-unauthenticated", "iam"] },
+        "scaling": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cpu", "memory"],
+          "properties": {
+            "min_instances": { "type": "integer", "minimum": 0 },
+            "max_instances": { "type": "integer", "minimum": 1 },
+            "concurrency": { "type": "integer", "minimum": 1 },
+            "timeout_seconds": { "type": "integer", "minimum": 1 },
+            "tasks": { "type": "integer", "minimum": 1 },
+            "parallelism": { "type": "integer", "minimum": 1 },
+            "max_retries": { "type": "integer", "minimum": 0 },
+            "task_timeout_seconds": { "type": "integer", "minimum": 1 },
+            "cpu": { "type": "string" },
+            "memory": { "type": "string" }
+          }
+        },
+        "failure_policy": { "type": "string", "minLength": 20 },
+        "env": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "required", "default", "description"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+              "required": { "type": "boolean" },
+              "default": { "type": ["string", "null"] },
+              "description": { "type": "string", "minLength": 5 }
+            }
+          }
+        },
+        "secrets": { "type": "array", "items": { "type": "string" } },
+        "iam": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["service_account", "roles", "invokers"],
+          "properties": {
+            "service_account": { "type": "string", "minLength": 1 },
+            "roles": { "type": "array", "items": { "type": "string", "pattern": "^roles/" } },
+            "invokers": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "contract", "notes"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["pubsub-topic", "pubsub-subscription", "firestore-database", "cloud-scheduler-job"] },
+        "contract": { "type": ["string", "null"] },
+        "notes": { "type": "string", "minLength": 5 }
+      }
+    }
+  }
+}

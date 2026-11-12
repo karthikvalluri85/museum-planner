@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://museum-planner.example/contracts/upstream/aic-artwork.schema.json",
+  "title": "AicArtwork",
+  "description": "The subset of an Art Institute of Chicago artwork record (https://api.artic.edu/api/v1/artworks) the AIC adapter depends on. Extra fields are allowed and ignored.",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "artist_display": { "type": ["string", "null"] },
+    "artist_title": { "type": ["string", "null"] },
+    "date_display": { "type": ["string", "null"] },
+    "medium_display": { "type": ["string", "null"] },
+    "dimensions": { "type": ["string", "null"] },
+    "is_on_view": { "type": ["boolean", "null"] },
+    "gallery_id": { "type": ["integer", "null"] },
+    "gallery_title": { "type": ["string", "null"], "description": "For example 'Gallery 240'. Null when not on view." },
+    "image_id": { "type": ["string", "null"] },
+    "department_title": { "type": ["string", "null"] },
+    "classification_title": { "type": ["string", "null"] },
+    "style_title": { "type": ["string", "null"] },
+    "subject_titles": { "type": ["array", "null"], "items": { "type": "string" } },
+    "term_titles": { "type": ["array", "null"], "items": { "type": "string" } },
+    "short_description": { "type": ["string", "null"] },
+    "is_boosted": { "type": ["boolean", "null"] }
+  }
+}
