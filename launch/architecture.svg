@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="1000" height="500" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <title id="t">Architecture on Google Cloud Run</title>
+  <desc id="d">Pub/Sub sends a museum id to the ingestion job. The ingestion job pulls raw objects from the museum's open API and writes normalized objects and a floor graph to Firestore. The planner service reads them and returns a plan to the visitor's browser.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="500" fill="#f8fafc"/>
+
+  <!-- Row 1 -->
+  <g>
+    <rect x="40" y="60" width="220" height="96" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+    <text x="150" y="100" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Pub/Sub</text>
+    <text x="150" y="126" text-anchor="middle" font-size="14" fill="#475569">topic: ingest-museum</text>
+  </g>
+  <g>
+    <rect x="390" y="60" width="220" height="96" rx="10" fill="#e0f2fe" stroke="#075985" stroke-width="2"/>
+    <text x="500" y="100" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Ingestion job</text>
+    <text x="500" y="126" text-anchor="middle" font-size="14" fill="#475569">Cloud Run job, runs to completion</text>
+  </g>
+  <g>
+    <rect x="740" y="60" width="220" height="96" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+    <text x="850" y="100" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Firestore</text>
+    <text x="850" y="126" text-anchor="middle" font-size="14" fill="#475569">objects and floor graphs</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g>
+    <rect x="390" y="310" width="220" height="96" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="500" y="350" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Museum API</text>
+    <text x="500" y="376" text-anchor="middle" font-size="14" fill="#475569">open collection data (Met, AIC)</text>
+  </g>
+  <g>
+    <rect x="740" y="310" width="220" height="96" rx="10" fill="#e0f2fe" stroke="#075985" stroke-width="2"/>
+    <text x="850" y="350" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Planner service</text>
+    <text x="850" y="376" text-anchor="middle" font-size="14" fill="#475569">Cloud Run service + web frontend</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="260" y1="108" x2="386" y2="108" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="325" y="96" text-anchor="middle" font-size="14" fill="#0f172a">museum id</text>
+
+  <line x1="500" y1="310" x2="500" y2="160" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="488" y="232" text-anchor="end" font-size="14" fill="#0f172a">raw objects with</text>
+  <text x="488" y="250" text-anchor="end" font-size="14" fill="#0f172a">gallery numbers</text>
+
+  <line x1="610" y1="108" x2="736" y2="108" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="675" y="78" text-anchor="middle" font-size="14" fill="#0f172a">normalized objects,</text>
+  <text x="675" y="96" text-anchor="middle" font-size="14" fill="#0f172a">floor graph</text>
+
+  <line x1="850" y1="156" x2="850" y2="306" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="862" y="226" font-size="14" fill="#0f172a">objects, floor graph</text>
+  <text x="862" y="244" font-size="14" fill="#0f172a">(read only)</text>
+
+  <line x1="850" y1="406" x2="850" y2="452" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="850" y="476" text-anchor="middle" font-size="14" fill="#0f172a">plan: stops, reasons, minutes, to the visitor's browser</text>
+
+  <text x="40" y="476" font-size="13" fill="#475569">Blue: runs on Cloud Run. Dashed: not ours.</text>
+</svg>

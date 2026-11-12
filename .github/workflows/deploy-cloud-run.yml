@@ -1,0 +1,88 @@
+name: deploy-cloud-run
+
+# Deploys both deployables to Cloud Run and verifies with real requests.
+# Runs only when started by hand, and only once the repository variables below
+# are set, so pushing this repo to GitHub deploys nothing by accident.
+#
+# Repository variables (Settings > Secrets and variables > Actions > Variables):
+#   GCP_PROJECT_ID               existing project with billing enabled
+#   GCP_REGION                   for example us-central1
+#   WORKLOAD_IDENTITY_PROVIDER   projects/NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER
+#   DEPLOY_SERVICE_ACCOUNT       service account the workflow impersonates
+# No long-lived keys: authentication is Workload Identity Federation.
+# docs/HANDOVER_CREDENTIALS.md has the commands that create these.
+#
+# First-time infrastructure (APIs, Firestore, service accounts, Pub/Sub,
+# Scheduler) is created by deploy/gcp-deploy.sh, run once by a person.
+# This workflow only redeploys code.
+#
+# UNTESTED: written before a GCP project or GitHub repository existed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_ingestion:
+        description: "Run the ingestion job after deploying it"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-cloud-run
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: ci
+    if: ${{ vars.GCP_PROJECT_ID != '' && vars.WORKLOAD_IDENTITY_PROVIDER != '' }}
+    runs-on: ubuntu-latest
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_REGION: ${{ vars.GCP_REGION }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.DEPLOY_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Read deploy settings from the contract
+        run: node tools/deploy-vars.mjs | tr -d "'" >> "$GITHUB_ENV"
+
+      - name: Deploy ingestion-job
+        run: |
+          gcloud run jobs deploy "$JOB_NAME" --source "$JOB_PATH" \
+            --project "$GCP_PROJECT_ID" --region "$GCP_REGION" \
+            --service-account "$JOB_SA@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+            --tasks "$JOB_TASKS" --parallelism "$JOB_PARALLELISM" --max-retries "$JOB_MAX_RETRIES" \
+            --task-timeout "${JOB_TASK_TIMEOUT}s" --cpu "$JOB_CPU" --memory "$JOB_MEMORY" \
+            --set-env-vars "GOOGLE_CLOUD_PROJECT=$GCP_PROJECT_ID,STORE_BACKEND=firestore,SOURCE_MODE=live,PUBSUB_SUBSCRIPTION=$PUBSUB_SUBSCRIPTION,MAX_OBJECTS=$JOB_MAX_OBJECTS,REFRESH_AFTER_HOURS=$JOB_REFRESH_AFTER_HOURS"
+
+      - name: Run ingestion-job
+        if: ${{ inputs.run_ingestion }}
+        run: gcloud run jobs execute "$JOB_NAME" --project "$GCP_PROJECT_ID" --region "$GCP_REGION" --wait
+
+      - name: Deploy planner
+        run: |
+          gcloud run deploy "$PLANNER_NAME" --source "$PLANNER_PATH" \
+            --project "$GCP_PROJECT_ID" --region "$GCP_REGION" \
+            --service-account "$PLANNER_SA@$GCP_PROJECT_ID.iam.gserviceaccount.com" --allow-unauthenticated \
+            --min-instances "$PLANNER_MIN_INSTANCES" --max-instances "$PLANNER_MAX_INSTANCES" \
+            --concurrency "$PLANNER_CONCURRENCY" --cpu "$PLANNER_CPU" --memory "$PLANNER_MEMORY" --timeout "${PLANNER_TIMEOUT}s" \
+            --set-env-vars "GOOGLE_CLOUD_PROJECT=$GCP_PROJECT_ID,STORE_BACKEND=firestore"
+
+      - name: Verify with real requests
+        run: |
+          URL="$(gcloud run services describe "$PLANNER_NAME" --project "$GCP_PROJECT_ID" --region "$GCP_REGION" --format='value(status.url)')"
+          ./deploy/verify.sh "$URL"
+          echo "Deployed and verified: $URL" >> "$GITHUB_STEP_SUMMARY"

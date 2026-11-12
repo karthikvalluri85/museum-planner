@@ -27,8 +27,25 @@ function scalingText(svc) {
   return `${s.tasks} task, parallelism ${s.parallelism}; ${s.cpu} CPU, ${s.memory}; task timeout ${s.task_timeout_seconds}s; max retries ${s.max_retries}`;
 }
 
-export function renderGenerated(catalog, api) {
+export function renderDecisionsMd(decisions) {
+  return [
+    '# Decisions',
+    '',
+    'One line per architectural decision and why. Generated from `docs/decisions.json` by `node tools/gen-architecture.mjs`; edit the JSON, not this file. Entries marked (assumption) were made without the owner\'s input and should be confirmed.',
+    '',
+    ...decisions.decisions.map((d) => `- **${d.id} ${d.title}${d.status === 'assumption' ? ' (assumption)' : ''}.** ${d.decision} *Why:* ${d.why}`),
+    '',
+  ].join('\n');
+}
+
+export function renderGenerated(catalog, api, decisions) {
   const out = {};
+
+  out.decisions = [
+    '| # | Decision | What we chose | Why | Status |',
+    '|---|---|---|---|---|',
+    ...decisions.decisions.map((d) => `| ${d.id} | ${cell(d.title)} | ${cell(d.decision)} | ${cell(d.why)} | ${d.status} |`),
+  ].join('\n');
 
   out['service-catalog'] = [
     '| Deployable | Kind | Provides | Consumes | Scaling bounds | Failure and retry policy |',
@@ -70,7 +87,7 @@ export function renderGenerated(catalog, api) {
   return out;
 }
 
-const MARKER = /<!-- GENERATED:([a-z-]+) -->\n([\s\S]*?)\n<!-- \/GENERATED:\1 -->/g;
+const MARKER = /<!-- GENERATED:([a-z-]+) -->\n([\s\S]*?)\n?<!-- \/GENERATED:\1 -->/g;
 
 export function extractGenerated(text) {
   const out = {};
@@ -80,7 +97,14 @@ export function extractGenerated(text) {
 
 function main() {
   const store = new DocStore(repoRoot);
-  const sections = renderGenerated(store.load('contracts/services.json'), store.load('contracts/planner/openapi.yaml'));
+  const decisions = store.load('docs/decisions.json');
+  const sections = renderGenerated(store.load('contracts/services.json'), store.load('contracts/planner/openapi.yaml'), decisions);
+  const decisionsFile = path.join(repoRoot, 'DECISIONS.md');
+  const decisionsMd = renderDecisionsMd(decisions);
+  if (!fs.existsSync(decisionsFile) || fs.readFileSync(decisionsFile, 'utf8').replace(/\r\n/g, '\n') !== decisionsMd) {
+    fs.writeFileSync(decisionsFile, decisionsMd);
+    console.log('DECISIONS.md: updated');
+  }
   const before = fs.readFileSync(ARCH, 'utf8').replace(/\r\n/g, '\n');
   const seen = new Set();
   const after = before.replace(MARKER, (whole, name) => {

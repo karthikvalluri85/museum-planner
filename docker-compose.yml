@@ -1,0 +1,110 @@
+# Local emulation of the Cloud Run topology. Fully offline once images are built.
+#
+#   docker compose up --build                         emulators -> init -> ingest fixtures -> planner on :8080
+#   docker compose --profile test run --rm planner-tests
+#   docker compose --profile test run --rm ingestion-tests
+#   SOURCE_MODE=live docker compose up --build        ingest from the real museum APIs instead of fixtures
+#
+# UNTESTED: written on a machine without Docker. See docs/HANDOVER_CREDENTIALS.md.
+
+name: museum-planner
+
+x-emulator-env: &emulator-env
+  GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-museum-planner-local}
+  FIRESTORE_EMULATOR_HOST: firestore:8080
+  PUBSUB_EMULATOR_HOST: pubsub:8085
+
+services:
+  # Stands in for Firestore (Native mode).
+  firestore:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud emulators firestore start --host-port=0.0.0.0:8080
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+  # Stands in for Pub/Sub.
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8085/"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+  # Stands in for the operator: creates topic ingest-museum and its pull
+  # subscription, then publishes the museums to ingest. The message bodies are
+  # base64 of {"museum_id":"met","reason":"add"} and {"museum_id":"aic","reason":"add"}.
+  pubsub-init:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      pubsub:
+        condition: service_healthy
+    environment:
+      PROJECT: ${GOOGLE_CLOUD_PROJECT:-museum-planner-local}
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        base="http://pubsub:8085/v1/projects/$$PROJECT"
+        curl -fsS -X PUT "$$base/topics/ingest-museum"
+        curl -fsS -X PUT "$$base/subscriptions/ingest-museum-job" -H 'content-type: application/json' \
+          -d "{\"topic\":\"projects/$$PROJECT/topics/ingest-museum\",\"ackDeadlineSeconds\":600}"
+        curl -fsS -X POST "$$base/topics/ingest-museum:publish" -H 'content-type: application/json' \
+          -d '{"messages":[{"data":"eyJtdXNldW1faWQiOiJtZXQiLCJyZWFzb24iOiJhZGQifQ=="},{"data":"eyJtdXNldW1faWQiOiJhaWMiLCJyZWFzb24iOiJhZGQifQ=="}]}'
+
+  # The Cloud Run job. Runs once and exits, as it does in the cloud.
+  ingestion-job:
+    build: ./services/ingestion-job
+    depends_on:
+      firestore:
+        condition: service_healthy
+      pubsub-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *emulator-env
+      STORE_BACKEND: firestore
+      PUBSUB_SUBSCRIPTION: ingest-museum-job
+      SOURCE_MODE: ${SOURCE_MODE:-fixture}
+      MAX_OBJECTS: ${MAX_OBJECTS:-1500}
+      REFRESH_AFTER_HOURS: "0"
+    restart: "no"
+
+  # The Cloud Run service: API plus static frontend.
+  planner:
+    build: ./services/planner
+    depends_on:
+      firestore:
+        condition: service_healthy
+      ingestion-job:
+        condition: service_completed_successfully
+    environment:
+      <<: *emulator-env
+      STORE_BACKEND: firestore
+      PORT: "8080"
+      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-600}
+    ports:
+      - "${PLANNER_PORT:-8080}:8080"
+
+  # Test runners. The repo is mounted read-only so the suites can read /contracts.
+  planner-tests:
+    profiles: ["test"]
+    image: python:3.12-slim
+    working_dir: /repo/services/planner
+    volumes:
+      - .:/repo:ro
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+    command: sh -c "pip install -q --root-user-action=ignore -r requirements-dev.txt && pytest -q -p no:cacheprovider"
+
+  ingestion-tests:
+    profiles: ["test"]
+    image: python:3.12-slim
+    working_dir: /repo/services/ingestion-job
+    volumes:
+      - .:/repo:ro
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+    command: sh -c "pip install -q --root-user-action=ignore -r requirements-dev.txt && pytest -q -p no:cacheprovider"

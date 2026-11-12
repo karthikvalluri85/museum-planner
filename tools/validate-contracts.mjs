@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { DocStore, validate, lintSchema, walkSchema, findCycle } from './lib/schema-lite.mjs';
 import { checkPlanInvariants } from './lib/plan-invariants.mjs';
 import { checkGraph } from './lib/graph-checks.mjs';
-import { renderGenerated, extractGenerated } from './gen-architecture.mjs';
+import { renderGenerated, renderDecisionsMd, extractGenerated } from './gen-architecture.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const store = new DocStore(repoRoot);
@@ -189,11 +189,14 @@ function gate() {
     warnings.push(`${archFile} does not exist yet`);
   } else {
     const current = extractGenerated(fs.readFileSync(path.join(repoRoot, archFile), 'utf8'));
-    const expected = renderGenerated(readJson('contracts/services.json'), api);
+    const decisions = readJson('docs/decisions.json');
+    const expected = renderGenerated(readJson('contracts/services.json'), api, decisions);
     for (const [name, body] of Object.entries(expected)) {
       if (current[name] === undefined) errors.push(`${archFile}: missing generated section "${name}"`);
       else if (current[name].trim() !== body.trim()) errors.push(`${archFile}: section "${name}" is out of date. Run: node tools/gen-architecture.mjs`);
     }
+    const decisionsMd = exists('DECISIONS.md') ? fs.readFileSync(path.join(repoRoot, 'DECISIONS.md'), 'utf8').replace(/\r\n/g, '\n') : null;
+    if (decisionsMd !== renderDecisionsMd(decisions)) errors.push('DECISIONS.md is out of date. Run: node tools/gen-architecture.mjs');
   }
 }
 

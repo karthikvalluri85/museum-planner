@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Museum plans for the rest of us</title>
+  <meta name="description" content="Tell us what you like, how long you have, and what your body can do today.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <h1>Museum plans for the rest of us</h1>
+    <p class="intro">Tell us what you like, how long you have, and what your body can do today.</p>
+  </header>
+
+  <main id="main">
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <div id="error" class="error-region" role="alert"></div>
+
+    <section id="form-screen" aria-label="Plan your visit">
+      <form id="plan-form" novalidate>
+        <fieldset class="card">
+          <legend>Museum</legend>
+          <label for="museum" class="visually-hidden">Choose a museum</label>
+          <select id="museum" name="museum" disabled>
+            <option value="">Loading museums...</option>
+          </select>
+          <div id="museum-info" class="museum-info"></div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>What do you like?</legend>
+          <p class="hint">Tap any that interest you, or add your own words. Pick up to 12. Leave it empty to see the highlights.</p>
+          <div id="facets" class="chips"></div>
+          <div class="add-row">
+            <label for="custom-interest">Add your own word</label>
+            <div class="add-controls">
+              <input id="custom-interest" type="text" maxlength="60" autocomplete="off" enterkeyhint="done">
+              <button type="button" id="add-interest" class="btn secondary">Add</button>
+            </div>
+          </div>
+          <p id="interest-msg" class="hint" role="status"></p>
+          <div id="custom-chips" class="chips"></div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>How much time do you have?</legend>
+          <div class="pills" id="time-pills">
+            <label class="pill"><input type="radio" name="time" value="30"><span>30 min</span></label>
+            <label class="pill"><input type="radio" name="time" value="45"><span>45 min</span></label>
+            <label class="pill"><input type="radio" name="time" value="60" checked><span>60 min</span></label>
+            <label class="pill"><input type="radio" name="time" value="90"><span>90 min</span></label>
+            <label class="pill"><input type="radio" name="time" value="120"><span>120 min</span></label>
+            <label class="pill"><input type="radio" name="time" value="180"><span>180 min</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>What does your body need today?</legend>
+          <label class="toggle">
+            <input type="checkbox" name="step_free">
+            <span class="toggle-text"><strong>Step-free</strong><span>Elevators and ramps only</span></span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" name="limited_stamina" id="limited_stamina" aria-controls="walking-choice">
+            <span class="toggle-text"><strong>Limited stamina</strong><span>Less walking, with places to sit</span></span>
+          </label>
+          <div id="walking-choice" class="sub-choice" hidden>
+            <fieldset>
+              <legend>The most walking I can do</legend>
+              <div class="pills">
+                <label class="pill"><input type="radio" name="walk" value="10"><span>10 min</span></label>
+                <label class="pill"><input type="radio" name="walk" value="15" checked><span>15 min</span></label>
+                <label class="pill"><input type="radio" name="walk" value="20"><span>20 min</span></label>
+                <label class="pill"><input type="radio" name="walk" value="30"><span>30 min</span></label>
+              </div>
+            </fieldset>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" name="with_young_child">
+            <span class="toggle-text"><strong>With a young child</strong><span>Shorter stops, big and striking things, ending near restrooms and the cafe</span></span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" name="low_sensory">
+            <span class="toggle-text"><strong>Low sensory</strong><span>Avoids loud, bright, and crowded places</span></span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" name="short_visit">
+            <span class="toggle-text"><strong>Short visit</strong><span>Stays in one wing and does it well</span></span>
+          </label>
+        </fieldset>
+
+        <button type="submit" id="submit" class="btn primary big" disabled>Build my plan</button>
+      </form>
+    </section>
+
+    <section id="plan-screen" aria-label="Your plan" hidden></section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
