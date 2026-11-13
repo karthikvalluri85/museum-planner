@@ -4,7 +4,7 @@ the planner is built against them, so change them only together."""
 import html
 import re
 from collections import Counter
-from collections.abc import Iterable, Sequence
+from collections.abc import Collection, Iterable, Mapping, Sequence
 from enum import Enum
 
 from pydantic import ValidationError
@@ -142,9 +142,25 @@ def tag_label(tag: str) -> str:
     )
 
 
-def build_facets(objects: Iterable[NormalizedObject]) -> list[Facet]:
-    """The 40 most common tags; tags seen only once are left out when at least 10 tags repeat."""
-    counts = Counter(tag for obj in objects for tag in obj.tags)
+def build_facets(
+    objects: Iterable[NormalizedObject],
+    interest_tags: Mapping[str, Collection[str]] | None = None,
+) -> list[Facet]:
+    """The 40 most common tags; tags seen only once are left out when at least 10 tags repeat.
+
+    Facets become the interest chips a visitor taps. `interest_tags` (object id -> the tags that
+    name a subject, style, or collection area) keeps materials and techniques such as
+    "oil on canvas" off the chips. A facet is always one of the object's own tags, so tapping a
+    chip always matches something.
+    """
+
+    def countable(obj: NormalizedObject) -> list[str]:
+        if interest_tags is None:
+            return obj.tags
+        wanted = interest_tags.get(obj.id, ())
+        return [tag for tag in obj.tags if tag in wanted]
+
+    counts = Counter(tag for obj in objects for tag in countable(obj))
     minimum = 2 if sum(1 for c in counts.values() if c >= 2) >= 10 else 1
     chosen = sorted(((t, c) for t, c in counts.items() if c >= minimum), key=lambda tc: (-tc[1], tc[0]))
     return [Facet(tag=t, label=tag_label(t), count=c) for t, c in chosen[:MAX_FACETS]]

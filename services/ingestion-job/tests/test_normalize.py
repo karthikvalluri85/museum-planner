@@ -95,6 +95,19 @@ def test_facets_keep_singletons_when_few_tags_repeat():
     assert [(f.tag, f.count) for f in facets] == [("a", 2), ("b", 1), ("c", 1)]
 
 
+def test_facets_count_only_interest_tags_when_given():
+    objs = [
+        make("1", tags=("landscapes", "oil on canvas", "impressionism")),
+        make("2", tags=("landscapes", "oil on canvas")),
+        make("3", tags=("oil on canvas", "portraits")),
+    ]
+    interest = {"test:1": {"landscapes", "impressionism"}, "test:2": {"landscapes"}, "test:3": {"portraits", "not on the object"}}
+    facets = build_facets(objs, interest)
+    assert [(f.tag, f.count) for f in facets] == [("landscapes", 2), ("impressionism", 1), ("portraits", 1)]
+    # Without the filter the material would have been the top chip.
+    assert build_facets(objs)[0].tag == "oil on canvas"
+
+
 def test_facets_capped_at_40_and_labelled():
     objs = [make("1", tags=tuple(f"tag{i:02d}" for i in range(25))), make("2", tags=tuple(f"zag{i:02d}" for i in range(25)))]
     assert len(build_facets(objs)) == 40

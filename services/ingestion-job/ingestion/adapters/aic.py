@@ -12,7 +12,7 @@ from pydantic import ValidationError
 from ingestion.adapters.base import REQUEST_BUDGET_FACTOR, MuseumInfo
 from ingestion.http_client import USER_AGENT, HttpClient, RequestBudgetExceeded
 from ingestion.models import AicArtwork, NormalizedObject
-from ingestion.normalize import Skip, blank_to_none, build_object, largest_cm_in_text, strip_html
+from ingestion.normalize import Skip, blank_to_none, build_object, clean_tags, largest_cm_in_text, strip_html
 
 API_BASE_URL = "https://api.artic.edu/api/v1"
 SEARCH_URL = f"{API_BASE_URL}/artworks/search"
@@ -39,6 +39,9 @@ def _gallery(raw: AicArtwork) -> str:
 
 def _artist(raw: AicArtwork) -> str | None:
     return blank_to_none(raw.artist_title) or blank_to_none((raw.artist_display or "").split("\n", 1)[0])
+
+# Subject terms that record where a work was once exhibited, not what it shows.
+_NOT_SUBJECTS = frozenset({"century of progress", "world's fairs", "chicago world's fairs"})
 
 
 class AicAdapter:
@@ -81,6 +84,18 @@ class AicAdapter:
             is_highlight=bool(raw.is_boosted),
             max_cm=largest_cm_in_text(raw.dimensions),
         )
+
+    def interest_tags(self, record: dict[str, Any]) -> list[str]:
+        try:
+            raw = AicArtwork.model_validate(record)
+        except ValidationError:
+            return []
+        # Chips come from subjects, style, and department. classification_title is often a
+        # medium ("oil on canvas") and term_titles mixes in materials and techniques; those
+        # stay searchable tags. Qualified vocabulary terms ("red (color)") and exhibition
+        # history are in the subject list but are not what a visitor would pick.
+        chips = clean_tags([*(raw.subject_titles or []), raw.style_title, raw.department_title])
+        return [tag for tag in chips if "(" not in tag and tag not in _NOT_SUBJECTS]
 
     def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
         http.reset_budget(REQUEST_BUDGET_FACTOR * max_objects)

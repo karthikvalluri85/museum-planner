@@ -161,3 +161,55 @@ def test_real_fixtures_normalize_and_skip_consistently(fixtures_dir):
         assert not any(o is Skip.INVALID for o in outcomes)
         assert any(isinstance(o, NormalizedObject) for o in outcomes)
         assert any(o is Skip.NO_GALLERY for o in outcomes)
+
+
+# ---- interest tags: what becomes an interest chip ----
+
+
+def test_met_interest_tags_are_subjects_department_and_culture():
+    record = {
+        "objectID": 1, "title": "T", "GalleryNumber": "131",
+        "tags": [{"term": "Horses"}, {"term": "Men"}],
+        "department": "Arms and Armor", "classification": "Archery Equipment-Crossbows",
+        "objectName": "Crossbow", "culture": "German", "period": "",
+    }
+    adapter = MetAdapter()
+    assert adapter.interest_tags(record) == ["horses", "men", "arms and armor", "german"]
+    obj = adapter.normalize(record)
+    assert set(adapter.interest_tags(record)) <= set(obj.tags)
+    assert "crossbow" in obj.tags and "crossbow" not in adapter.interest_tags(record)
+    assert adapter.interest_tags({"title": "no id"}) == []
+
+
+def test_aic_interest_tags_leave_out_materials_and_techniques():
+    record = {
+        "id": 7, "title": "T", "is_on_view": True, "gallery_title": "Gallery 240",
+        "subject_titles": ["Landscapes", "Water", "red (color)", "Century of Progress"], "classification_title": "oil on canvas",
+        "style_title": "Impressionism", "department_title": "Painting and Sculpture of Europe",
+        "term_titles": ["oil paint (paint)", "Landscapes", "blue (color)"],
+    }
+    adapter = AicAdapter()
+    chips = adapter.interest_tags(record)
+    assert chips == ["landscapes", "water", "impressionism", "painting and sculpture of europe"]
+    obj = adapter.normalize(record)
+    assert set(chips) <= set(obj.tags)
+    for not_a_chip in ("oil paint (paint)", "oil on canvas", "red (color)", "century of progress"):
+        assert not_a_chip in obj.tags and not_a_chip not in chips
+
+
+def test_fixture_facets_are_all_interest_tags(fixtures_dir):
+    from ingestion.normalize import build_facets
+
+    for adapter, fixture in ((MetAdapter(), "met/objects.json"), (AicAdapter(), "aic/artworks.json")):
+        records = json.loads((fixtures_dir / fixture).read_text(encoding="utf-8"))
+        objects, interest = [], {}
+        for record in records:
+            obj = adapter.normalize(record)
+            if isinstance(obj, NormalizedObject):
+                objects.append(obj)
+                interest[obj.id] = set(adapter.interest_tags(record))
+        facets = build_facets(objects, interest)
+        assert facets, fixture
+        allowed = set().union(*interest.values())
+        assert all(f.tag in allowed for f in facets)
+        assert not any("(" in f.tag or f.tag.startswith("oil ") for f in facets), [f.tag for f in facets]

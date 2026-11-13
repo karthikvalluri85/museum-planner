@@ -144,7 +144,7 @@ class Runner:
 
         max_objects = item.max_objects or self._config.max_objects
         records = self._source.load(adapter, max_objects)
-        objects, skipped_no_gallery, skipped_invalid = self._normalize(adapter, records)
+        objects, interest_tags, skipped_no_gallery, skipped_invalid = self._normalize(adapter, records)
         if skipped_invalid:
             log(logging.WARNING, "records skipped as invalid", museum_id=museum_id, count=skipped_invalid)
         objects = order_objects(objects)[:max_objects]
@@ -179,7 +179,7 @@ class Runner:
             object_count=len(objects),
             skipped_no_gallery_count=skipped_no_gallery,
             chunk_count=len(chunks),
-            facets=build_facets(objects),
+            facets=build_facets(objects, interest_tags),
             last_ingested_at=f"{now:%Y-%m-%dT%H:%M:%SZ}",
             ingest_run_id=run_id,
         )
@@ -197,8 +197,12 @@ class Runner:
         return result
 
     @staticmethod
-    def _normalize(adapter: Adapter, records: list[dict[str, Any]]) -> tuple[list[NormalizedObject], int, int]:
+    def _normalize(
+        adapter: Adapter, records: list[dict[str, Any]]
+    ) -> tuple[list[NormalizedObject], dict[str, frozenset[str]], int, int]:
+        """Returns (objects, interest tags per object id, skipped for no gallery, skipped as invalid)."""
         objects: dict[str, NormalizedObject] = {}
+        interest_tags: dict[str, frozenset[str]] = {}
         no_gallery = invalid = 0
         for record in records:
             outcome = adapter.normalize(record)
@@ -206,9 +210,10 @@ class Runner:
                 no_gallery += 1
             elif outcome is Skip.INVALID:
                 invalid += 1
-            else:
-                objects.setdefault(outcome.id, outcome)
-        return list(objects.values()), no_gallery, invalid
+            elif outcome.id not in objects:
+                objects[outcome.id] = outcome
+                interest_tags[outcome.id] = frozenset(adapter.interest_tags(record))
+        return list(objects.values()), interest_tags, no_gallery, invalid
 
     def _ack(self, ack_ids: list[str]) -> None:
         if not ack_ids:

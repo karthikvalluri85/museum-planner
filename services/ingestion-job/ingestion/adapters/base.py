@@ -33,6 +33,11 @@ class Adapter(Protocol):
         """One raw record to a plannable object, or the reason it is dropped."""
         ...
 
+    def interest_tags(self, record: dict[str, Any]) -> list[str]:
+        """The record's tags that name a subject, style, or collection area (cleaned like
+        object tags). Only these become interest chips; materials and techniques do not."""
+        ...
+
 
 def read_fixture(fixtures_dir: Path, adapter: Adapter) -> list[dict[str, Any]]:
     path = fixtures_dir / adapter.museum_id / adapter.fixture_file

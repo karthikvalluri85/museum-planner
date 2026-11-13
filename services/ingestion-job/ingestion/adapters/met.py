@@ -12,7 +12,7 @@ from pydantic import ValidationError
 from ingestion.adapters.base import REQUEST_BUDGET_FACTOR, MuseumInfo
 from ingestion.http_client import HttpClient, HttpStatusError, RequestBudgetExceeded
 from ingestion.models import MetObject, NormalizedObject
-from ingestion.normalize import Skip, build_object, largest_cm_in_text
+from ingestion.normalize import Skip, build_object, clean_tags, largest_cm_in_text
 
 API_BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1"
 SEARCH_URL = "https://collectionapi.metmuseum.org/public/collection/v1.1/search"
@@ -70,6 +70,15 @@ class MetAdapter:
             is_highlight=bool(raw.isHighlight),
             max_cm=_max_cm(raw),
         )
+
+    def interest_tags(self, record: dict[str, Any]) -> list[str]:
+        try:
+            raw = MetObject.model_validate(record)
+        except ValidationError:
+            return []
+        # Classification and object name ("stone-sculpture", "bottle") stay searchable tags
+        # but make poor chips.
+        return clean_tags([t.term for t in raw.tags or []] + [raw.department, raw.culture])
 
     def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
         http.reset_budget(REQUEST_BUDGET_FACTOR * max_objects)
