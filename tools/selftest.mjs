@@ -72,7 +72,7 @@ test('yaml: rejects what it cannot parse faithfully', () => {
 test('yaml: the OpenAPI contract parses to the expected shape', () => {
   const api = store.load('contracts/planner/openapi.yaml');
   assert.equal(api.openapi, '3.1.0');
-  assert.deepEqual(Object.keys(api.paths), ['/healthz', '/api/museums', '/api/museums/{museum_id}', '/api/plan']);
+  assert.deepEqual(Object.keys(api.paths), ['/health', '/api/museums', '/api/museums/{museum_id}', '/api/plan']);
   assert.deepEqual(api.components.schemas.Constraints.properties.max_walking_minutes.type, ['integer', 'null']);
   assert.equal(api.components.schemas.Stop.if.properties.kind.const, 'object');
   assert.equal(api.paths['/api/plan'].post.responses['422'].content['application/json'].schema.$ref, '#/components/schemas/Error');

@@ -51,7 +51,7 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   const detail = example('museum-detail.valid.json');
 
-  if (req.method === 'GET' && url.pathname === '/healthz') return send(res, 200, { status: 'ok' });
+  if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { status: 'ok' });
   if (req.method === 'GET' && url.pathname === '/api/museums') {
     const { id, name, city, object_count, last_ingested_at } = detail;
     return send(res, 200, { museums: [{ id, name, city, object_count, last_ingested_at }] });

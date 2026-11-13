@@ -85,7 +85,7 @@ def create_app(store: Store | None = None) -> FastAPI:
     )
     _register_error_handlers(app)
 
-    @app.get("/healthz", tags=["ops"], operation_id="getHealth")
+    @app.get("/health", tags=["ops"], operation_id="getHealth")
     def get_health():
         return {"status": "ok"}
 

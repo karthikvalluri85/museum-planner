@@ -35,7 +35,7 @@ def test_invalid_example_request_is_rejected():
 
 
 def test_health(client):
-    response = client.get("/healthz")
+    response = client.get("/health")
     assert response.status_code == 200
     assert_matches_schema("Health", response.json())
 
@@ -131,4 +131,4 @@ def test_static_dir_is_served_when_present(monkeypatch, tmp_path):
     monkeypatch.setattr(planner.main, "STATIC_DIR", tmp_path)
     static_client = TestClient(create_app(store=FileStore(FIXTURE_STORE)))
     assert "planner" in static_client.get("/").text
-    assert static_client.get("/healthz").json() == {"status": "ok"}
+    assert static_client.get("/health").json() == {"status": "ok"}

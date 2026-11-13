@@ -21,7 +21,7 @@ tags:
   - name: museums
   - name: planning
 paths:
-  /healthz:
+  /health:
     get:
       operationId: getHealth
       tags: [ops]

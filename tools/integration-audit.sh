@@ -43,10 +43,10 @@ step "4. Start the planner on the same store"
 PLANNER_PID=$!
 trap 'kill "$PLANNER_PID" 2>/dev/null || true' EXIT
 for _ in $(seq 1 40); do
-  curl -fsS "$URL/healthz" >/dev/null 2>&1 && break
+  curl -fsS "$URL/health" >/dev/null 2>&1 && break
   sleep 0.5
 done
-curl -fsS "$URL/healthz"; echo
+curl -fsS "$URL/health"; echo
 
 step "5. Real requests, checked against the schema, invariants I1-I8, and the stored galleries"
 plan() {

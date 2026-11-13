@@ -16,8 +16,8 @@ cd "$(dirname "$0")/.."
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-echo "-- GET $URL/healthz"
-curl -fsS "$URL/healthz"; echo
+echo "-- GET $URL/health"
+curl -fsS "$URL/health"; echo
 
 echo "-- GET $URL/api/museums"
 curl -fsS "$URL/api/museums" | tee "$TMP/museums.json"; echo
