@@ -279,11 +279,15 @@ def _stairs_only_warning(
     graph: Graph, candidates: Sequence[Candidate], start: str, low_sensory: bool
 ) -> str | None:
     """Names the stairs that keep interest-matched objects out of a step-free plan."""
-    step_free = graph.shortest_paths(start, RouteMode(True, low_sensory, start))
+    mode = RouteMode(True, low_sensory, start)
+    step_free = graph.shortest_paths(start, mode)
     any_access = graph.shortest_paths(start, RouteMode(False, low_sensory, start))
     left_out = [
         c for c in candidates
-        if c.is_match and not step_free.reaches(c.node_id) and any_access.reaches(c.node_id)
+        if c.is_match
+        and graph.allows_stop(c.node_id, mode)
+        and not step_free.reaches(c.node_id)
+        and any_access.reaches(c.node_id)
     ]
     if not left_out:
         return None
@@ -308,11 +312,18 @@ def _no_plan_message(
     matched: Sequence[str],
     candidates: Sequence[Candidate],
     child: bool,
+    start: str,
 ) -> str:
     parts: list[str] = []
     if interests and not matched:
         parts.append(f"Nothing on view matches {_quoted(interests)}.")
-    if candidates:
+    calm_mode = RouteMode(False, request.constraints.low_sensory, start)
+    if candidates and not any(data.graph.allows_stop(cand.node_id, calm_mode) for cand in candidates):
+        parts.append(
+            "Everything that fits your request is in a space marked loud, bright, or crowded, "
+            "and a low-sensory plan does not stop in those. Try other interests, or turn off low sensory."
+        )
+    elif candidates:
         parts.append(
             f"Nothing fits in the {request.time_budget_minutes} minutes you have with these "
             "constraints. Try more time or fewer constraints."
@@ -394,7 +405,7 @@ def create_plan(data: MuseumData, request: PlanRequest) -> Json:
     if plan is not None:
         status = "ok"
     elif status == "no_plannable_objects":
-        message = _no_plan_message(data, request, interests, matched, candidates, c.with_young_child)
+        message = _no_plan_message(data, request, interests, matched, candidates, c.with_young_child, start)
 
     response = {
         "status": status,

@@ -62,7 +62,7 @@ def test_nothing_reachable_explains_and_suggests(client):
     res = post_plan(client, body)
     assert res["status"] == "no_plannable_objects"
     assert res["applied"]["interests_matched"] == ["glass"]
-    assert "Nothing fits in the 90 minutes" in res["message"]
+    assert "loud, bright, or crowded" in res["message"] and "low sensory" in res["message"]
 
 
 def test_unmatched_interest_falls_back_to_highlights(client):

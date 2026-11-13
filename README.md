@@ -4,7 +4,7 @@ Museums are built for a visitor with three free hours, two good legs, no kids, a
 
 Built for the Product Hunt x Google Cloud Run "Build for Good" contest.
 
-**Status: built local-first. Not deployed. The Python services have not been executed yet.** [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md) is the path from here to a verified deployment.
+**Status: built local-first. Not deployed.** Both test suites and the offline integration audit pass locally; the Firestore, Pub/Sub, Docker, and deploy paths have not been run. [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md) is the path from here to a verified deployment.
 
 ## Layout
 
@@ -21,7 +21,7 @@ Built for the Product Hunt x Google Cloud Run "Build for Good" contest.
 
 The two services share no code. They agree only through `contracts/`.
 
-## Run what runs today (Node only)
+## Contract gate and frontend preview (Node only)
 
 ```bash
 node tools/selftest.mjs
@@ -45,16 +45,16 @@ Then open http://localhost:8099. The mock does not plan anything; type `nostepfr
 
 ## Run the real thing
 
-Needs Python 3.12 or Docker. See step 0 of [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md). In short:
+Needs Python 3.12 or Docker. See step 0 of [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md). With Python, the offline audit ingests the fixtures into a file-backed store, serves them with the planner, and checks real responses against the contract:
+
+```bash
+PYTHON="$(pwd)/.venv/Scripts/python" bash tools/integration-audit.sh
+```
+
+With Docker (not yet run anywhere):
 
 ```bash
 docker compose up --build
-```
-
-or, with Python and no Docker, the file-backed store:
-
-```bash
-bash tools/integration-audit.sh
 ```
 
 A 45-minute step-free plan with curl, once the planner is up:

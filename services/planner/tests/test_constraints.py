@@ -2,9 +2,25 @@
 
 from __future__ import annotations
 
-import pytest
+import json
+import shutil
 
-from .helpers import fixture_nodes, object_ids, object_stops, plan_body, post_plan, segments_of
+import pytest
+from fastapi.testclient import TestClient
+
+from planner.main import create_app
+from planner.store import FileStore
+
+from .helpers import (
+    FIXTURE_STORE,
+    MUSEUM_ID,
+    fixture_nodes,
+    object_ids,
+    object_stops,
+    plan_body,
+    post_plan,
+    segments_of,
+)
 
 
 def test_stamina_caps_walking_and_inserts_rest_stops(client):
@@ -78,7 +94,7 @@ def test_young_child_large_objects_say_so(client):
 @pytest.mark.parametrize("interests", [["animals"], [], ["armor"], ["cats", "glass"]])
 @pytest.mark.parametrize("budget", [45, 120])
 @pytest.mark.parametrize("current_gallery", [None, "201"])
-def test_low_sensory_avoids_tagged_nodes_as_stops_and_pass_through(client, interests, budget, current_gallery):
+def test_low_sensory_never_stops_in_tagged_nodes_and_names_any_it_passes_through(client, interests, budget, current_gallery):
     body = plan_body(
         interests=interests,
         time_budget_minutes=budget,
@@ -93,7 +109,29 @@ def test_low_sensory_avoids_tagged_nodes_as_stops_and_pass_through(client, inter
             assert stop["node_id"] == start or not nodes[stop["node_id"]]["sensory"]
         for seg in segments_of(plan):
             for node_id in (seg["from_node_id"], seg["to_node_id"]):
-                assert node_id == start or not nodes[node_id]["sensory"], seg
+                if node_id != start and nodes[node_id]["sensory"]:
+                    assert any(nodes[node_id]["name"] in w for w in plan["warnings"]), seg
+        # The test museum always has a calm way round, so nothing should be passed through at all.
+        assert not any("passes through" in w for w in plan["warnings"])
+
+
+def test_low_sensory_forced_through_a_tagged_node_says_so(tmp_path):
+    """Remove the calm corridor: West is now reachable only through the bright Glass Court."""
+    shutil.copytree(FIXTURE_STORE, tmp_path / "store")
+    graph_file = tmp_path / "store" / "floor_graphs" / f"{MUSEUM_ID}.json"
+    doc = json.loads(graph_file.read_text(encoding="utf-8"))
+    doc["edges"] = [e for e in doc["edges"] if "west-corridor" not in (e["from"], e["to"])]
+    doc["nodes"] = [n for n in doc["nodes"] if n["id"] != "west-corridor"]
+    graph_file.write_text(json.dumps(doc), encoding="utf-8")
+    forced = TestClient(create_app(store=FileStore(tmp_path / "store")))
+
+    res = post_plan(forced, plan_body(interests=["animals"], constraints={"low_sensory": True}))
+    plan = res["plan"]
+    assert "testmuseum:t09" in object_ids(plan)  # in West, beyond the court
+    assert all(stop["node_id"] != "bright-court" for stop in plan["stops"])
+    assert "bright-court" in {seg["to_node_id"] for seg in segments_of(plan)}
+    court = fixture_nodes()["bright-court"]["name"]
+    assert any(court in w and "bright" in w and "no way around" in w for w in plan["warnings"])
 
 
 def test_low_sensory_drops_objects_only_in_bright_node(client):

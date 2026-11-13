@@ -64,9 +64,9 @@ def _key(value: float) -> float:
     return round(value, 6)
 
 
-def nearest_amenity(graph: Graph, paths: ShortestPaths) -> str | None:
+def nearest_amenity(graph: Graph, paths: ShortestPaths, mode: RouteMode) -> str | None:
     """Nearest reachable node with restroom and cafe, else nearest with a restroom."""
-    reachable = [graph.nodes[nid] for nid in paths.dist]
+    reachable = [graph.nodes[nid] for nid in paths.dist if graph.allows_stop(nid, mode)]
     for wanted in (lambda n: n.near_restroom and n.near_cafe, lambda n: n.near_restroom):
         options = [n.id for n in reachable if wanted(n)]
         if options:
@@ -102,7 +102,8 @@ def plan_route(
     paths = PathCache(graph, mode)
     route = Route(start=start)
 
-    pool = list(candidates)
+    # Low sensory: never stop in a loud, bright, or crowded node (walking through is a last resort).
+    pool = [c for c in candidates if graph.allows_stop(c.node_id, mode)]
     if settings.short_visit:
         wing = choose_wing(pool, paths.from_(start))
         pool = [c for c in pool if c.wing == wing]
@@ -112,7 +113,7 @@ def plan_route(
         if not settings.with_young_child:
             return 0.0, 0.0
         from_node = paths.from_(node_id)
-        target = nearest_amenity(graph, from_node)
+        target = nearest_amenity(graph, from_node, mode)
         if target is None:
             return 0.0, 0.0
         walk = leg_minutes(from_node.dist[target])
@@ -177,7 +178,7 @@ def plan_route(
 
     if settings.with_young_child and route.object_visits:
         here = paths.from_(current)
-        target = nearest_amenity(graph, here)
+        target = nearest_amenity(graph, here, mode)
         if target is None:
             route.warnings.append(
                 "No restroom is reachable from the last stop with your constraints. "
@@ -187,4 +188,16 @@ def plan_route(
             route.visits.append(
                 Visit("amenity", target, AMENITY_DWELL, tuple(here.path_to(target)))
             )
+
+    passed: list[str] = []
+    for visit in route.visits:
+        for seg in visit.leg:
+            if graph.is_tagged(seg.to_id, mode) and seg.to_id not in passed:
+                passed.append(seg.to_id)
+    for node_id in passed:
+        node = graph.nodes[node_id]
+        route.warnings.append(
+            f"This route passes through {node.name} ({', '.join(node.sensory)}). "
+            "Our floor data shows no way around it."
+        )
     return route

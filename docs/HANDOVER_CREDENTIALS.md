@@ -1,12 +1,14 @@
 # Handover: what to run once you have credentials
 
-The system was built local-first on a machine with no Python, no Docker, no GCP project, and no GitHub remote. **Nothing is deployed, and the Python code has never been executed.** This page is the path from here to a verified deployment.
+The system was built local-first on a machine with no Docker, no GCP project, and no GitHub remote. **Nothing is deployed.** Both Python test suites and the offline integration audit pass locally (2026-11-13), using a Python 3.12 installed inside the project folder. This page is the path from here to a verified deployment.
 
 Placeholders used below: `GCP_PROJECT_ID`, `GCP_REGION`, `GITHUB_REPO_URL`, `WORKLOAD_IDENTITY_PROVIDER`.
 
-## Step 0. Run the tests locally (do this first, it needs no credentials)
+## Step 0. Run the tests locally (needs no credentials)
 
-The contract gate already runs here, with nothing installed:
+This already passes on the build machine. Python 3.12 lives in `.tools/` (the `uv` installer and the interpreter) and `.venv/` (the packages); both are gitignored, and deleting those two folders removes it. The installer also left one launcher file outside the project, `python3.12.exe` in the `.local/bin` folder of your user profile, which is not on PATH and is safe to delete.
+
+The contract gate needs only Node:
 
 ```bash
 node tools/selftest.mjs
@@ -16,13 +18,7 @@ node tools/selftest.mjs
 node tools/validate-contracts.mjs
 ```
 
-The Python suites and the integration audit need **either** Python 3.12 **or** Docker Desktop. Pick one.
-
-With Python 3.12:
-
-```bash
-python -m venv .venv && .venv/Scripts/python -m pip install -r services/planner/requirements-dev.txt -r services/ingestion-job/requirements-dev.txt
-```
+The Python suites and the integration audit, using the existing `.venv` (on a fresh machine, create it first with `python -m venv .venv` and install both `requirements-dev.txt` files):
 
 ```bash
 cd services/planner && ../../.venv/Scripts/python -m pytest -q; cd ../..
@@ -36,7 +32,7 @@ cd services/ingestion-job && ../../.venv/Scripts/python -m pytest -q; cd ../..
 PYTHON="$(pwd)/.venv/Scripts/python" bash tools/integration-audit.sh
 ```
 
-With Docker Desktop instead:
+With Docker Desktop instead (never run; this machine has no Docker):
 
 ```bash
 docker compose --profile test run --rm planner-tests
@@ -52,7 +48,7 @@ docker compose up --build
 
 Then open http://localhost:8080 and, in a second terminal, run `bash deploy/verify.sh http://localhost:8080`.
 
-Expect some failures on the first run: the code was desk-checked, not executed. Fix them before going further.
+Last results on the build machine: ingestion job 92 tests passed, planner 187 passed, integration audit all checks passed.
 
 ## Step 1. Authenticate and point at your project
 
@@ -128,17 +124,19 @@ The last command prints the value for `WORKLOAD_IDENTITY_PROVIDER`. `DEPLOY_SERV
 
 ## Things that are unverified, in the order they are likely to bite
 
-1. **All Python code.** Never executed. Step 0 is where that changes.
+1. **The Firestore and Pub/Sub code paths.** Everything was tested through the file-backed store and a fake queue. `FirestoreStore` (both services) and `PubSubPullQueue` have never run, not even against the emulators, because there is no Docker or Java here. `docker compose up` is the first real test of them.
 2. **`docker-compose.yml`.** Never run. The emulator image tag, its health checks, and the Pub/Sub REST calls in `pubsub-init` are from memory.
 3. **`deploy/gcp-deploy.sh` and both workflows.** Never run. Shell syntax is checked; the gcloud flags are not.
 4. **The Scheduler-to-job call** (step 8 of the deploy script) and decision D05 (Pub/Sub cannot start a job directly). Confirm both against current Cloud Run documentation.
-5. **The live museum adapters.** The fixture path is what tests cover. The first live run against the Met and AIC APIs may hit rate limits or query-parameter mistakes. Checked on 2026-11-13: the Met's `/v1/search` returns HTTP 410 (retired) and `/v1.1/search` returns 200, so the adapter uses `v1.1`. The Met blocks scripted clients after a burst of requests (HTTP 403), which is why only 41 real Met records are in the fixtures; a live run from Cloud Run may hit the same wall. The AIC API refuses to page past 1,000 search results, so one run ingests about 1,000 AIC works at most.
+5. **The live museum adapters at full size.** Both ran against the real APIs on 2026-11-13 with small caps (200 AIC works, 25 Met objects); the output passed the contract schemas and produced valid plans. A full 1,500-object Met run has not been tried and may be rate limited. Also checked that day: the Met's `/v1/search` returns HTTP 410 (retired) and `/v1.1/search` returns 200, so the adapter uses `v1.1`. The Met blocks scripted clients after a burst of requests (HTTP 403), which is why only 41 real Met records are in the fixtures; a live run from Cloud Run may hit the same wall. The AIC API refuses to page past 1,000 search results, so one run ingests about 1,000 AIC works at most.
 6. **The floor graphs.** Hand-built and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md). Until someone checks them, the app says so on every plan. Known gaps found by comparing the graphs with real API records in the fixtures:
    - The Met graph was built from a map dated about 2016 to 2020. Live Met records use gallery numbers `341`, `361`, `362`, `363` (the Rockefeller Wing, renumbered when it reopened) and `099`, none of which are in the graph, so objects there cannot be planned yet. Get the current map from metmuseum.org and update `services/ingestion-job/seed/floor_graphs/met.json`.
    - The Met graph marks no place as near both a restroom and a cafe, and only 4 places with seating, so plans for a young child end near a restroom only and limited-stamina plans get few rest stops.
    - Three Met areas are stairs-only in the graph because step-free access could not be confirmed: the Greek and Roman mezzanine, the Modern mezzanine, and the Robert Lehman Collection.
 
 ## Behaviors the builders chose that you may want to change
+
+- **Low sensory passes through a tagged space when there is no other way.** The first design refused to route through any loud, bright, or crowded space, and the audit showed that made low-sensory plans nearly empty: at the AIC the only way in from the entrance is through the bright Griffin Court. The planner now never stops in such a space, routes around it when it can, and otherwise passes through and names it in the plan's warnings.
 
 The planner and ingestion code went beyond the brief in a few places. None is wrong; each is a product call.
 

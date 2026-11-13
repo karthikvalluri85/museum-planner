@@ -1,4 +1,4 @@
-"""Floor graph routing: Dijkstra on walking minutes, with step-free and sensory filters. Pure."""
+"""Floor graph routing: Dijkstra on walking minutes, with a step-free filter and sensory avoidance. Pure."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ class Segment:
 class RouteMode:
     step_free: bool
     avoid_sensory: bool
-    # The visitor is already standing here, so it is allowed even if it is loud or bright.
+    # The visitor is already standing here, so it is never treated as a space to avoid.
     start: str
 
 
@@ -68,31 +68,41 @@ class Graph:
                 key=lambda t: (t[0], t[1].walk_minutes, not t[1].step_free, t[1].name or "")
             )
 
-    def allows_node(self, node_id: str, mode: RouteMode) -> bool:
-        if node_id == mode.start or not mode.avoid_sensory:
-            return True
-        return not self.nodes[node_id].sensory
+    def is_tagged(self, node_id: str, mode: RouteMode) -> bool:
+        """True if a low-sensory visitor should be kept out of this node."""
+        return mode.avoid_sensory and node_id != mode.start and bool(self.nodes[node_id].sensory)
+
+    def allows_stop(self, node_id: str, mode: RouteMode) -> bool:
+        return not self.is_tagged(node_id, mode)
 
     def shortest_paths(self, source: str, mode: RouteMode) -> ShortestPaths:
+        """Shortest walks from source. In low-sensory mode a path first enters as few loud,
+        bright, or crowded nodes as it can, and only then minimizes minutes: a lobby that
+        is the only way in must not make the whole museum unreachable."""
         dist: dict[str, float] = {source: 0.0}
+        tagged: dict[str, int] = {source: 0}
         prev: dict[str, Segment] = {}
         done: set[str] = set()
-        heap: list[tuple[float, str]] = [(0.0, source)]
+        heap: list[tuple[int, float, str]] = [(0, 0.0, source)]
         while heap:
-            d, node_id = heapq.heappop(heap)
+            t, d, node_id = heapq.heappop(heap)
             if node_id in done:
                 continue
             done.add(node_id)
             for neighbour, edge in self._adjacent[node_id]:
-                if mode.step_free and not edge.step_free:
+                if neighbour in done or (mode.step_free and not edge.step_free):
                     continue
-                if not self.allows_node(neighbour, mode):
-                    continue
-                candidate = d + edge.walk_minutes
-                if neighbour not in dist or candidate < dist[neighbour] - EPS:
-                    dist[neighbour] = candidate
+                cand_t = t + (1 if self.is_tagged(neighbour, mode) else 0)
+                cand_d = d + edge.walk_minutes
+                if (
+                    neighbour not in dist
+                    or cand_t < tagged[neighbour]
+                    or (cand_t == tagged[neighbour] and cand_d < dist[neighbour] - EPS)
+                ):
+                    dist[neighbour] = cand_d
+                    tagged[neighbour] = cand_t
                     prev[neighbour] = Segment(node_id, neighbour, edge)
-                    heapq.heappush(heap, (candidate, neighbour))
+                    heapq.heappush(heap, (cand_t, cand_d, neighbour))
         return ShortestPaths(source, dist, prev)
 
 

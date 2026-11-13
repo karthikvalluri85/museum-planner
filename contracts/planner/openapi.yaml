@@ -271,7 +271,7 @@ components:
         low_sensory:
           type: boolean
           default: false
-          description: "Avoid nodes tagged loud, bright, or crowded, both as stops and as pass-through."
+          description: "Never stop in a node tagged loud, bright, or crowded. Route around such nodes where the floor graph allows; where it does not, pass through and name each one in plan.warnings."
         short_visit:
           type: boolean
           default: false
