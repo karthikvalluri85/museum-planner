@@ -1,7 +1,13 @@
 """The Metropolitan Museum of Art, via The Met Collection API (https://metmuseum.github.io/).
 
 There is no bulk on-view endpoint. /v1.1/search (the /v1 search was retired on 2026-10-01) lists
-on-view object ids; each object is then fetched with GET /objects/{id}."""
+on-view object ids; each object is then fetched with GET /objects/{id}.
+
+The API sits behind bot protection that answers HTTP 403 to clients it considers too eager,
+including from Cloud Run. So object requests go slowly, and when the wall comes down the run
+keeps what it already has instead of failing: a smaller museum beats no museum."""
+
+import logging
 
 from concurrent.futures import ThreadPoolExecutor
 from itertools import zip_longest
@@ -10,15 +16,18 @@ from typing import Any
 from pydantic import ValidationError
 
 from ingestion.adapters.base import REQUEST_BUDGET_FACTOR, MuseumInfo
-from ingestion.http_client import HttpClient, HttpStatusError, RequestBudgetExceeded
+from ingestion.http_client import HttpClient, HttpStatusError, RequestBudgetExceeded, UpstreamError
+from ingestion.log import log
 from ingestion.models import MetObject, NormalizedObject
 from ingestion.normalize import Skip, build_object, clean_tags, largest_cm_in_text
 
 API_BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1"
 SEARCH_URL = "https://collectionapi.metmuseum.org/public/collection/v1.1/search"
 MAX_SEARCH_LIMIT = 500
-CONCURRENCY = 4
+REQUESTS_PER_SECOND = 3.0
+CONCURRENCY = 2
 FETCH_BATCH = 20
+_BLOCKED: dict[str, Any] = {}  # sentinel: the API refused this object request
 
 
 def _max_cm(raw: MetObject) -> float | None:
@@ -81,21 +90,32 @@ class MetAdapter:
         return clean_tags([t.term for t in raw.tags or []] + [raw.department, raw.culture])
 
     def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
+        http.set_rate(REQUESTS_PER_SECOND)
         http.reset_budget(REQUEST_BUDGET_FACTOR * max_objects)
         candidates = self._candidate_ids(http, max_objects)
         records: list[dict[str, Any]] = []
         on_view = 0
+        blocked = False
         with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
             for start in range(0, len(candidates), FETCH_BATCH):
-                if on_view >= max_objects or http.remaining == 0:
+                if blocked or on_view >= max_objects or http.remaining == 0:
                     break
                 batch = candidates[start : start + FETCH_BATCH]
                 for record in pool.map(lambda object_id: self._fetch_object(http, object_id), batch):
-                    if record is None:
-                        continue
-                    records.append(record)
-                    if str(record.get("GalleryNumber") or "").strip():
-                        on_view += 1
+                    if record is _BLOCKED:
+                        blocked = True
+                    elif record is not None:
+                        records.append(record)
+                        if str(record.get("GalleryNumber") or "").strip():
+                            on_view += 1
+        if blocked and not records:
+            raise UpstreamError("the Met API refused every object request (HTTP 403)")
+        if blocked:
+            log(
+                logging.WARNING,
+                "the Met API started refusing object requests (HTTP 403); keeping what was fetched",
+                museum_id=self.museum_id, records_fetched=len(records), on_view=on_view, wanted=max_objects,
+            )
         return records
 
     def _candidate_ids(self, http: HttpClient, max_objects: int) -> list[int]:
@@ -135,6 +155,8 @@ class MetAdapter:
         except HttpStatusError as exc:
             if exc.status == 404:
                 return None
+            if exc.status == 403:
+                return _BLOCKED
             raise
         except RequestBudgetExceeded:
             return None

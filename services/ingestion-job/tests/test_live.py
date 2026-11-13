@@ -175,3 +175,35 @@ def test_client_errors_are_not_retried():
     with pytest.raises(HttpStatusError) as info:
         client(handler).get_json("https://example.test/a")
     assert info.value.status == 403 and len(calls) == 1
+
+
+def blocking_met_handler(calls, *, allow_objects):
+    """Serves searches normally, then answers 403 to every object request after the first `allow_objects`."""
+    served = []
+    inner = met_handler(calls, highlights={1: list(range(1, 41))}, on_view={1: list(range(1, 41))})
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "/objects/" in request.url.path:
+            if len(served) >= allow_objects:
+                calls.append(request)
+                return httpx.Response(403, text="blocked")
+            served.append(request)
+        return inner(request)
+
+    return handler
+
+
+def test_met_keeps_what_it_fetched_when_the_api_starts_refusing():
+    calls = []
+    records = MetAdapter().fetch_live(client(blocking_met_handler(calls, allow_objects=7)), max_objects=30)
+    assert len(records) == 7
+    object_calls = [c for c in calls if "/objects/" in c.url.path]
+    # It stops at the end of the batch that hit the wall; it does not keep knocking for all 30.
+    assert len(object_calls) <= 20
+
+
+def test_met_fails_when_every_object_request_is_refused():
+    from ingestion.http_client import UpstreamError
+
+    with pytest.raises(UpstreamError, match="refused every object request"):
+        MetAdapter().fetch_live(client(blocking_met_handler([], allow_objects=0)), max_objects=30)

@@ -48,6 +48,11 @@ class HttpClient:
         self._budget: int | None = None
         self._used = 0
 
+    def set_rate(self, requests_per_second: float) -> None:
+        """Changes the throttle from now on, for an API that refuses faster clients."""
+        with self._lock:
+            self._interval = 1.0 / requests_per_second if requests_per_second > 0 else 0.0
+
     def reset_budget(self, max_requests: int) -> None:
         """Starts a new budget; every attempt, retries included, counts against it."""
         with self._lock:
