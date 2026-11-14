@@ -519,7 +519,7 @@ components:
     Applied:
       type: object
       additionalProperties: false
-      required: [constraints, interests_matched, interests_unmatched]
+      required: [constraints, interests_matched, interests_unmatched, notes]
       properties:
         constraints:
           $ref: "#/components/schemas/Constraints"
@@ -531,6 +531,11 @@ components:
           type: array
           items:
             type: string
+        notes:
+          type: array
+          items:
+            type: string
+          description: "One plain sentence per constraint in force, saying what it did to this plan. Built from the plan and the floor graph, never from the request alone."
     PlanResponse:
       type: object
       additionalProperties: false

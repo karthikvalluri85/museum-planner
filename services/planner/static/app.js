@@ -350,6 +350,21 @@ function addCustomInterest() {
   input.focus();
 }
 
+// A visit of 60 minutes or less always stays in one wing, so the Short visit box shows as on
+// and locked for those, instead of being a switch that changes nothing.
+const SHORT_VISIT_MAX_MINUTES = 60;
+
+function syncShortVisit() {
+  const box = $("short_visit");
+  const minutes = Number(document.querySelector('input[name="time"]:checked').value);
+  const automatic = minutes <= SHORT_VISIT_MAX_MINUTES;
+  box.disabled = automatic;
+  box.checked = automatic || !!state.wantsShortVisit;
+  $("short-visit-hint").textContent = automatic
+    ? `Always on for ${SHORT_VISIT_MAX_MINUTES} minutes or less: the plan stays in one wing`
+    : "Stays in one wing and does it well";
+}
+
 function readForm() {
   const checked = (name) => document.querySelector(`input[name="${name}"]`).checked;
   const radio = (name) => Number(document.querySelector(`input[name="${name}"]:checked`).value);
@@ -519,6 +534,16 @@ function noticesFooter(notices) {
   );
 }
 
+// What each choice on the form did to this plan, in the server's words.
+function appliedNotes(resp) {
+  const notes = (resp.applied && resp.applied.notes) || [];
+  if (!notes.length) return null;
+  return h("div", { class: "banner info applied-notes" },
+    h("h3", { text: "How we used what you told us" }),
+    h("ul", {}, notes.map((n) => h("li", { text: n }))),
+  );
+}
+
 function renderPlanScreen() {
   const s = state.session;
   const root = $("plan-screen");
@@ -535,6 +560,8 @@ function renderPlanScreen() {
     const plan = resp.plan;
     root.append(planSummary(plan, s.done.length ? `. ${s.done.length} earlier ${s.done.length === 1 ? "stop is" : "stops are"} already done.` : ""));
     root.append(accessBanner(resp, plan, asked));
+    const used = appliedNotes(resp);
+    if (used) root.append(used);
     if (plan.warnings.length) {
       root.append(h("div", { class: "banner info" },
         h("h3", { text: "Good to know" }),
@@ -560,6 +587,8 @@ function renderPlanScreen() {
       h("p", { text: resp.message || "We could not find a step-free plan for what you asked." }),
       h("p", { text: "We have not made a step-free plan. Try different interests or more time." }),
     ));
+    const usedInAlternative = appliedNotes(resp);
+    if (usedInAlternative) root.append(usedInAlternative);
     const alt = resp.alternative;
     if (alt) {
       root.append(h("div", { class: "alt-block" },
@@ -760,6 +789,11 @@ async function init() {
   $("limited_stamina").addEventListener("change", (e) => {
     $("walking-choice").hidden = !e.target.checked;
   });
+  $("short_visit").addEventListener("change", (e) => {
+    if (!e.target.disabled) state.wantsShortVisit = e.target.checked;
+  });
+  $("time-pills").addEventListener("change", syncShortVisit);
+  syncShortVisit();
 
   setStatus("Loading museums...");
   try {

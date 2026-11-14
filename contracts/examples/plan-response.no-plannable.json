@@ -1,13 +1,26 @@
 {
   "status": "no_plannable_objects",
-  "museum": { "id": "demo", "name": "Demo Museum (synthetic example)" },
+  "museum": {
+    "id": "demo",
+    "name": "Demo Museum (synthetic example)"
+  },
   "plan": null,
   "alternative": null,
   "message": "Nothing on view matches \"dinosaurs\", and no highlight fits in the 15 minutes you have. Try a different interest or more time.",
   "applied": {
-    "constraints": { "step_free": false, "limited_stamina": false, "max_walking_minutes": null, "with_young_child": false, "low_sensory": false, "short_visit": true },
+    "constraints": {
+      "step_free": false,
+      "limited_stamina": false,
+      "max_walking_minutes": null,
+      "with_young_child": false,
+      "low_sensory": false,
+      "short_visit": true
+    },
     "interests_matched": [],
-    "interests_unmatched": ["dinosaurs"]
+    "interests_unmatched": [
+      "dinosaurs"
+    ],
+    "notes": []
   },
   "notices": [
     "Built from the museum's public data. The museum has not reviewed this plan.",

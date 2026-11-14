@@ -1,22 +1,60 @@
 {
   "status": "ok",
-  "museum": { "id": "demo", "name": "Demo Museum (synthetic example)" },
+  "museum": {
+    "id": "demo",
+    "name": "Demo Museum (synthetic example)"
+  },
   "plan": {
-    "start": { "node_id": "entrance", "node_name": "Main Entrance", "walk_minutes_to_first": 0, "route_to_first": [] },
+    "start": {
+      "node_id": "entrance",
+      "node_name": "Main Entrance",
+      "walk_minutes_to_first": 0,
+      "route_to_first": []
+    },
     "stops": [
       {
-        "order": 1, "kind": "object", "gallery": null, "node_id": "a-wing", "node_name": "Wing A galleries", "floor": "1", "wing": "Wing A",
+        "order": 1,
+        "kind": "object",
+        "gallery": null,
+        "node_id": "a-wing",
+        "node_name": "Wing A galleries",
+        "floor": "1",
+        "wing": "Wing A",
         "object": null,
         "why": "Matches your interest in animals.",
-        "grounding": { "matched_tags": [], "fields": ["object.tags"] },
-        "dwell_minutes": 4, "walk_minutes_to_next": null, "route_to_next": []
+        "grounding": {
+          "matched_tags": [],
+          "fields": [
+            "object.tags"
+          ]
+        },
+        "dwell_minutes": 4,
+        "walk_minutes_to_next": null,
+        "route_to_next": []
       }
     ],
-    "totals": { "dwell_minutes": 4, "walking_minutes": 0, "total_minutes": 4, "time_budget_minutes": 45 },
-    "step_free": true, "stairs": [], "wings": ["Wing A"], "warnings": []
+    "totals": {
+      "dwell_minutes": 4,
+      "walking_minutes": 0,
+      "total_minutes": 4,
+      "time_budget_minutes": 45
+    },
+    "step_free": true,
+    "stairs": [],
+    "wings": [
+      "Wing A"
+    ],
+    "warnings": []
   },
   "alternative": null,
   "message": null,
-  "applied": { "constraints": {}, "interests_matched": [], "interests_unmatched": [] },
-  "notices": ["Built from the museum's public data. The museum has not reviewed this plan."]
+  "applied": {
+    "constraints": {},
+    "interests_matched": [],
+    "interests_unmatched": [],
+    "notes": []
+  },
+  "notices": [
+    "Built from the museum's public data. The museum has not reviewed this plan."
+  ]
 }

@@ -338,6 +338,91 @@ def _no_plan_message(
     return " ".join(parts)
 
 
+def _count(n: int, noun: str) -> str:
+    return f"{n} {noun}" if n == 1 else f"{n} {noun}s"
+
+
+def _applied_notes(
+    graph: Graph,
+    request: PlanRequest,
+    applied: Json,
+    candidates: Sequence[Candidate],
+    start: str,
+    status: str,
+    shown: Json | None,
+) -> list[str]:
+    """One sentence per constraint in force, saying what it did to the plan being shown
+    (the plan, or the stairs alternative). Each is read off the plan and the floor graph, so
+    a visitor can see their choice had an effect, or be told plainly that nothing had to change."""
+    c = request.constraints
+    notes: list[str] = []
+    stops = shown["stops"] if shown else []
+
+    if c.step_free:
+        if status == "ok" and shown and shown["step_free"]:
+            lifts: list[str] = []
+            for seg in _plan_segments(shown):
+                if seg["kind"] in ("elevator", "ramp") and seg["name"] and seg["name"] not in lifts:
+                    lifts.append(seg["name"])
+            via = f" It uses {_and_join(lifts)}." if lifts else " It stays on one level."
+            notes.append("Step-free: every connection on this route is marked step-free in our floor data." + via)
+        elif status == "no_step_free_route":
+            notes.append("Step-free: not possible for this request. The alternative shown uses stairs.")
+
+    if c.limited_stamina and shown:
+        rests = sum(1 for s in stops if s["kind"] == "rest")
+        walking = shown["totals"]["walking_minutes"]
+        text = (
+            f"Limited stamina: walking is capped at {applied['max_walking_minutes']} minutes, "
+            f"and this plan walks {walking:g}."
+        )
+        text += (
+            f" {_count(rests, 'rest stop')} added where our floor data shows seating."
+            if rests
+            else " No rest stop was added: our floor data shows no seating where one was due."
+        )
+        notes.append(text)
+
+    if c.with_young_child and shown:
+        ending = next((s for s in stops if s["kind"] == "amenity"), None)
+        text = "With a young child: no object stop is longer than 3 minutes, and larger objects are preferred."
+        text += f" The plan ends at {ending['node_name']}." if ending else " No restroom could be reached to end at."
+        notes.append(text)
+
+    if c.low_sensory:
+        mode = RouteMode(False, True, start)
+        left_out = [cand for cand in candidates if not graph.allows_stop(cand.node_id, mode)]
+        if left_out:
+            spaces: list[str] = []
+            for cand in left_out:
+                name = graph.nodes[cand.node_id].name
+                if name not in spaces:
+                    spaces.append(name)
+            named = _and_join(spaces[:3]) + (" and others" if len(spaces) > 3 else "")
+            verb = "is" if len(left_out) == 1 else "are"
+            notes.append(
+                f"Low sensory: {_count(len(left_out), 'object')} that would fit your request {verb} in "
+                f"{'a space' if len(spaces) == 1 else 'spaces'} marked loud, bright, or crowded "
+                f"({named}), so the plan does not stop there."
+            )
+        else:
+            notes.append(
+                "Low sensory: nothing that fits your request is in a space marked loud, bright, or "
+                "crowded, so no stop had to change."
+            )
+
+    if applied["short_visit"] and shown and shown["wings"]:
+        wing = shown["wings"][0]
+        if c.short_visit:
+            notes.append(f"Short visit: this plan stays in one wing, {wing}.")
+        else:
+            notes.append(
+                f"You have {request.time_budget_minutes} minutes, so this plan stays in one wing, {wing}. "
+                "Visits of 60 minutes or less always do."
+            )
+    return notes
+
+
 def create_plan(data: MuseumData, request: PlanRequest) -> Json:
     graph = data.graph
     c = request.constraints
@@ -417,6 +502,7 @@ def create_plan(data: MuseumData, request: PlanRequest) -> Json:
             "constraints": applied,
             "interests_matched": matched,
             "interests_unmatched": [i for i in interests if i not in matched],
+            "notes": _applied_notes(graph, request, applied, candidates, start, status, plan or alternative),
         },
         "notices": notices(data),
     }

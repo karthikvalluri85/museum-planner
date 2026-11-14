@@ -1,8 +1,14 @@
 {
   "museum_id": "demo",
-  "interests": ["animals", "armor"],
-  "time_budget_minutes": 45,
-  "constraints": { "step_free": true, "with_young_child": false },
+  "interests": [
+    "animals",
+    "armor"
+  ],
+  "time_budget_minutes": 90,
+  "constraints": {
+    "step_free": true,
+    "with_young_child": false
+  },
   "current_gallery": null,
   "exclude_object_ids": [],
   "skip_wings": []

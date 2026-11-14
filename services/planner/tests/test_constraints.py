@@ -169,3 +169,77 @@ def test_time_budget_is_never_exceeded(client, budget, constraints):
     for plan in [p for p in (res["plan"], res["alternative"]) if p]:
         assert plan["totals"]["total_minutes"] <= budget
         assert plan["totals"]["time_budget_minutes"] == budget
+
+
+# ---- applied.notes: the plan says what each choice did ----
+
+
+def notes_for(client, **fields):
+    return post_plan(client, plan_body(**fields))["applied"]["notes"]
+
+
+def test_no_constraints_and_a_long_visit_have_nothing_to_say(client):
+    assert notes_for(client, interests=["animals"], time_budget_minutes=120) == []
+
+
+def test_short_visit_note_names_the_wing_and_says_when_it_was_automatic(client):
+    asked = post_plan(client, plan_body(interests=["armor"], time_budget_minutes=120, constraints={"short_visit": True}))
+    wing = asked["plan"]["wings"][0]
+    assert asked["applied"]["notes"] == [f"Short visit: this plan stays in one wing, {wing}."]
+
+    automatic = post_plan(client, plan_body(interests=["armor"], time_budget_minutes=45))
+    assert automatic["applied"]["notes"] == [
+        f"You have 45 minutes, so this plan stays in one wing, {automatic['plan']['wings'][0]}. "
+        "Visits of 60 minutes or less always do."
+    ]
+    # Ticking the box for a visit that is already short changes the wording, not the plan.
+    ticked = post_plan(client, plan_body(interests=["armor"], time_budget_minutes=45, constraints={"short_visit": True}))
+    assert object_ids(ticked["plan"]) == object_ids(automatic["plan"])
+    assert ticked["applied"]["notes"] == [f"Short visit: this plan stays in one wing, {ticked['plan']['wings'][0]}."]
+
+
+def test_low_sensory_note_counts_what_was_left_out_and_names_the_space(client):
+    notes = notes_for(client, interests=["animals"], time_budget_minutes=120, constraints={"low_sensory": True})
+    court = fixture_nodes()["bright-court"]["name"]
+    assert len(notes) == 1 and notes[0].startswith("Low sensory: ")
+    assert court in notes[0] and "does not stop there" in notes[0]
+
+
+def test_low_sensory_note_says_so_when_nothing_had_to_change(client):
+    body = dict(interests=["armor"], time_budget_minutes=120, constraints={"low_sensory": True}, exclude_object_ids=[])
+    calm = post_plan(client, plan_body(**body))
+    plain = post_plan(client, plan_body(**{**body, "constraints": {}}))
+    if object_ids(calm["plan"]) == object_ids(plain["plan"]) and "no stop had to change" in calm["applied"]["notes"][0]:
+        return  # the honest "same route" case
+    # Otherwise something really was left out, and the note must say what.
+    assert "does not stop there" in calm["applied"]["notes"][0]
+
+
+def test_step_free_note_names_the_elevator_and_never_appears_for_a_route_with_stairs(client):
+    ok = post_plan(client, plan_body(interests=["animals"], time_budget_minutes=120, constraints={"step_free": True}))
+    note = ok["applied"]["notes"][0]
+    assert ok["plan"]["step_free"] is True and note.startswith("Step-free: every connection")
+    lifts = {s["name"] for s in segments_of(ok["plan"]) if s["kind"] in ("elevator", "ramp")}
+    assert all(name in note for name in lifts)
+
+    blocked = post_plan(client, plan_body(interests=["astronomy"], constraints={"step_free": True}))
+    assert blocked["status"] == "no_step_free_route"
+    assert blocked["applied"]["notes"][0] == "Step-free: not possible for this request. The alternative shown uses stairs."
+    assert not any("every connection" in n for n in blocked["applied"]["notes"])
+
+
+def test_stamina_and_child_notes_match_the_plan(client):
+    res = post_plan(client, plan_body(interests=["animals"], time_budget_minutes=90, constraints={"limited_stamina": True}))
+    rests = sum(1 for s in res["plan"]["stops"] if s["kind"] == "rest")
+    note = res["applied"]["notes"][0]
+    assert "capped at 15 minutes" in note and f"walks {res['plan']['totals']['walking_minutes']:g}" in note
+    assert (f"{rests} rest stop" in note) if rests else ("No rest stop was added" in note)
+
+    res = post_plan(client, plan_body(interests=["animals"], time_budget_minutes=120, constraints={"with_young_child": True}))
+    ending = res["plan"]["stops"][-1]
+    assert ending["kind"] == "amenity"
+    assert res["applied"]["notes"] == [
+        "With a young child: no object stop is longer than 3 minutes, and larger objects are preferred. "
+        f"The plan ends at {ending['node_name']}."
+    ]
+    assert all(s["dwell_minutes"] <= 3 for s in res["plan"]["stops"] if s["kind"] == "object")

@@ -1,26 +1,121 @@
 {
   "description": "Each case is validated by tools/validate-contracts.mjs. 'valid' is the expected outcome. Cases with 'invariants: true' also run plan invariants I1-I8; cases with 'graph: true' also run the floor-graph cross-field checks.",
   "cases": [
-    { "schema": "contracts/events/ingest-museum.schema.json", "instance": "contracts/examples/ingest-message.valid.json", "valid": true },
-    { "schema": "contracts/events/ingest-museum.schema.json", "instance": "contracts/examples/ingest-message.invalid.json", "valid": false },
-    { "schema": "contracts/firestore/object.schema.json", "instance": "contracts/examples/object.valid.json", "valid": true },
-    { "schema": "contracts/firestore/object.schema.json", "instance": "contracts/examples/object.invalid-no-gallery.json", "valid": false },
-    { "schema": "contracts/firestore/object-chunk.schema.json", "instance": "contracts/examples/object-chunk.valid.json", "valid": true },
-    { "schema": "contracts/firestore/museum.schema.json", "instance": "contracts/examples/museum.valid.json", "valid": true },
-    { "schema": "contracts/firestore/floor-graph.schema.json", "instance": "contracts/examples/floor-graph.valid.json", "valid": true, "graph": true },
-    { "schema": "contracts/firestore/floor-graph.schema.json", "instance": "contracts/examples/floor-graph.invalid-unnamed-stairs.json", "valid": false },
-    { "schema": "contracts/firestore/floor-graph.schema.json", "instance": "contracts/examples/floor-graph.invalid-stairs-marked-step-free.json", "valid": false },
-    { "schema": "contracts/upstream/met-object.schema.json", "instance": "contracts/examples/met-object.valid.json", "valid": true },
-    { "schema": "contracts/upstream/aic-artwork.schema.json", "instance": "contracts/examples/aic-artwork.valid.json", "valid": true },
-    { "schema": "contracts/services.schema.json", "instance": "contracts/services.json", "valid": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest", "instance": "contracts/examples/plan-request.valid.json", "valid": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest", "instance": "contracts/examples/plan-request.replan.valid.json", "valid": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest", "instance": "contracts/examples/plan-request.invalid.json", "valid": false },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/MuseumDetail", "instance": "contracts/examples/museum-detail.valid.json", "valid": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/Error", "instance": "contracts/examples/error.valid.json", "valid": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse", "instance": "contracts/examples/plan-response.ok.json", "valid": true, "invariants": true, "request": "contracts/examples/plan-request.valid.json" },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse", "instance": "contracts/examples/plan-response.no-step-free.json", "valid": true, "invariants": true, "request": "contracts/examples/plan-request.valid.json" },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse", "instance": "contracts/examples/plan-response.no-plannable.json", "valid": true, "invariants": true },
-    { "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse", "instance": "contracts/examples/plan-response.invalid-object-stop-without-gallery.json", "valid": false }
+    {
+      "schema": "contracts/events/ingest-museum.schema.json",
+      "instance": "contracts/examples/ingest-message.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/events/ingest-museum.schema.json",
+      "instance": "contracts/examples/ingest-message.invalid.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/firestore/object.schema.json",
+      "instance": "contracts/examples/object.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/firestore/object.schema.json",
+      "instance": "contracts/examples/object.invalid-no-gallery.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/firestore/object-chunk.schema.json",
+      "instance": "contracts/examples/object-chunk.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/firestore/museum.schema.json",
+      "instance": "contracts/examples/museum.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/firestore/floor-graph.schema.json",
+      "instance": "contracts/examples/floor-graph.valid.json",
+      "valid": true,
+      "graph": true
+    },
+    {
+      "schema": "contracts/firestore/floor-graph.schema.json",
+      "instance": "contracts/examples/floor-graph.invalid-unnamed-stairs.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/firestore/floor-graph.schema.json",
+      "instance": "contracts/examples/floor-graph.invalid-stairs-marked-step-free.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/upstream/met-object.schema.json",
+      "instance": "contracts/examples/met-object.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/upstream/aic-artwork.schema.json",
+      "instance": "contracts/examples/aic-artwork.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/services.schema.json",
+      "instance": "contracts/services.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest",
+      "instance": "contracts/examples/plan-request.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest",
+      "instance": "contracts/examples/plan-request.replan.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest",
+      "instance": "contracts/examples/plan-request.invalid.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/MuseumDetail",
+      "instance": "contracts/examples/museum-detail.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/Error",
+      "instance": "contracts/examples/error.valid.json",
+      "valid": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse",
+      "instance": "contracts/examples/plan-response.ok.json",
+      "valid": true,
+      "invariants": true,
+      "request": "contracts/examples/plan-request.valid.json"
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse",
+      "instance": "contracts/examples/plan-response.no-step-free.json",
+      "valid": true,
+      "invariants": true,
+      "request": "contracts/examples/plan-request.short.valid.json"
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse",
+      "instance": "contracts/examples/plan-response.no-plannable.json",
+      "valid": true,
+      "invariants": true
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanResponse",
+      "instance": "contracts/examples/plan-response.invalid-object-stop-without-gallery.json",
+      "valid": false
+    },
+    {
+      "schema": "contracts/planner/openapi.yaml#/components/schemas/PlanRequest",
+      "instance": "contracts/examples/plan-request.short.valid.json",
+      "valid": true
+    }
   ]
 }
