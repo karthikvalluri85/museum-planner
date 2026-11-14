@@ -1,6 +1,26 @@
 # Handover: what to run once you have credentials
 
-**Deployed on 2026-11-13.** Live at https://planner-284069478679.us-central1.run.app.
+**Deployed on 2026-11-13. Taken offline on 2026-11-14.** The web address now answers 403 to everyone and the 10-minute timer is paused. Nothing was deleted: the service, the job, the database contents, and the built images are all still in the project.
+
+To bring it back:
+
+```bash
+gcloud run services add-iam-policy-binding planner --project museum-planner-514613 --region us-central1 --member allUsers --role roles/run.invoker
+```
+
+```bash
+gcloud scheduler jobs resume ingest-tick --project museum-planner-514613 --location us-central1
+```
+
+To remove everything for good, so nothing can ever be billed (Google keeps a deleted project recoverable for 30 days):
+
+```bash
+gcloud projects delete museum-planner-514613
+```
+
+While offline, the only ongoing use is storage for the built images and the museum data.
+
+The address was https://planner-284069478679.us-central1.run.app.
 
 | What | Value |
 |---|---|

@@ -4,7 +4,7 @@ A web app that builds a museum visit plan from three things a visitor tells it: 
 
 This document is tied to `/contracts`. The sections between `GENERATED` markers are rendered from the contracts and from `docs/decisions.json` by `node tools/gen-architecture.mjs`; `node tools/validate-contracts.mjs` fails if they are stale. Everything else is hand-written.
 
-**Status on 2026-11-13: deployed to Cloud Run and verified with real requests at https://planner-284069478679.us-central1.run.app.** See [HANDOVER_CREDENTIALS.md](HANDOVER_CREDENTIALS.md).
+**Status: deployed to Cloud Run on 2026-11-13 and verified with real requests; taken offline on 2026-11-14 (public access removed, timer paused, nothing deleted).** See [HANDOVER_CREDENTIALS.md](HANDOVER_CREDENTIALS.md).
 
 ## The five pieces
 
