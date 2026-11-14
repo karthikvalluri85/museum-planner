@@ -19,7 +19,7 @@ Museums are built for a visitor with three free hours, two good legs, no kids, a
 
 Built for the Product Hunt x Google Cloud Run "Build for Good" contest.
 
-**Status: built, deployed to Google Cloud Run on 13 November 2026, verified with real requests, and taken offline on 14 November 2026.** Nothing was deleted, so it can be brought back in two commands; see [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md). Both test suites and the offline integration audit pass locally and in CI. Never run: `docker-compose.yml` and the deploy workflow.
+**Status: built, deployed to Google Cloud Run on 13 November 2026, verified with real requests, taken offline on 14 November, and the cloud project then deleted.** Nothing is running anywhere. The code, the contracts, the floor maps and the tests are all here, and the walkthrough above was recorded from the live app. To run it again, deploy to a new Google Cloud project: [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md). Both test suites and the offline integration audit pass locally and in CI. Never run: `docker-compose.yml` and the deploy workflow.
 
 ## Layout
 

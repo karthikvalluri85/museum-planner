@@ -1,24 +1,14 @@
 # Handover: what to run once you have credentials
 
-**Deployed on 2026-11-13. Taken offline on 2026-11-14.** The web address now answers 403 to everyone and the 10-minute timer is paused. Nothing was deleted: the service, the job, the database contents, and the built images are all still in the project.
+**Deployed on 2026-11-13, taken offline on 2026-11-14, and the Google Cloud project `museum-planner-514613` was deleted the same day.** Nothing is running and nothing is being billed to it.
 
-To bring it back:
-
-```bash
-gcloud run services add-iam-policy-binding planner --project museum-planner-514613 --region us-central1 --member allUsers --role roles/run.invoker
-```
+Google keeps a deleted project recoverable for about 30 days. Until then, this restores it with everything in it (the service, the job, the database contents, the images):
 
 ```bash
-gcloud scheduler jobs resume ingest-tick --project museum-planner-514613 --location us-central1
+gcloud projects undelete museum-planner-514613
 ```
 
-To remove everything for good, so nothing can ever be billed (Google keeps a deleted project recoverable for 30 days):
-
-```bash
-gcloud projects delete museum-planner-514613
-```
-
-While offline, the only ongoing use is storage for the built images and the museum data.
+After that window it is gone for good, and that project ID cannot be reused. To run the system again from scratch, create a new project and follow steps 1 and 2 below with its ID; `deploy/gcp-deploy.sh` and the commands in it are what was used. The table below records what the deleted project contained.
 
 | What | Value |
 |---|---|
