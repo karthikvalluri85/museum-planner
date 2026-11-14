@@ -82,7 +82,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). The most useful contribution is a correc
 
 ## License
 
-No license has been chosen yet, so the code is not licensed for reuse. The bundled museum records have their own terms; see `services/ingestion-job/fixtures/README.md`.
+The code is under the [MIT License](LICENSE). The bundled museum records are not ours and have their own terms; see `services/ingestion-job/fixtures/README.md`. The floor maps in `services/ingestion-job/seed/floor_graphs/` are our own work, built from the museums' published plans, and are covered by the same license.
 
 ## Honest limits
 

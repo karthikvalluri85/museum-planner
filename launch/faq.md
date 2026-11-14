@@ -33,4 +33,4 @@ Nothing. There are no accounts and no cookies. Your answers are sent with the re
 - **What about crowds right now, or a broken elevator?** Not covered. Sensory tags are fixed estimates for well-known busy or bright spaces. Live closures and outages are not in any open data we have found.
 - **Blind or low-vision visitors? Deaf visitors?** Not yet. The app itself is built to work with a screen reader and keyboard, but the routing does not yet know about tactile exhibits, audio description, or captioned media.
 - **Why Cloud Run?** The ingester is a job that runs to completion; the planner is a stateless service that scales to zero between visits. Adding a museum is a Pub/Sub message, not a redeploy.
-- **Is it open source?** Decide before launch and answer plainly.
+- **Is it open source?** Yes, under the MIT license: https://github.com/karthikvalluri85/museum-planner. The floor maps are in the repository too, and corrections to them are the most useful contribution anyone can make.
