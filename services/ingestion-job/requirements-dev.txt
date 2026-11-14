@@ -1,4 +1,4 @@
 -r requirements.txt
 pytest>=8,<9
-jsonschema>=4.21,<5
+jsonschema>=4.26.0,<5
 referencing>=0.35
