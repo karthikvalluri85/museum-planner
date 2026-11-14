@@ -1,0 +1,46 @@
+name: Floor data is wrong
+description: A route said step-free and was not, an elevator or staircase is misplaced, or a gallery is missing.
+title: "Floor data: "
+labels: ["floor-data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The floor maps are built by hand from each museum's published plan and have not been checked on site. Reports like this are how they get better. Thank you.
+  - type: dropdown
+    id: museum
+    attributes:
+      label: Museum
+      options:
+        - The Metropolitan Museum of Art
+        - Art Institute of Chicago
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - A route labeled step-free has steps on it
+        - A connection marked as stairs is actually step-free
+        - An elevator, ramp, or staircase is in the wrong place or misnamed
+        - A gallery number is missing or in the wrong area
+        - Seating, restroom, or cafe information is wrong
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Where
+      description: Gallery numbers, and the names the app used for the places involved.
+      placeholder: "Between gallery 304 and the Robert Lehman Collection"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What is actually there
+      description: What you saw, or what the museum's published plan shows. A link or the date you visited helps.
+    validations:
+      required: true

@@ -21,7 +21,7 @@ The drafts are written as the product is designed to be. Check each against the 
 - [ ] "Takes about a day" per floor graph (FAQ 3) matches how long it actually took.
 - [ ] The Smartify and Infiniteach descriptions are still accurate. Reread their sites the day before.
 - [ ] "No accounts and no cookies" (FAQ 6) is still true of what is deployed, including any analytics added later.
-- [ ] No file in the repo other than `kickoff-prompt.md` contains the word the kickoff brief bans. Check with a case-insensitive search for `personaliz`.
+- [ ] No file in the repo contains the word the original brief bans. Check with a case-insensitive search for `personaliz`.
 - [ ] Decide the open-source answer in the FAQ follow-ups.
 
 ## November 17

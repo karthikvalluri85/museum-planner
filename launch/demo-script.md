@@ -27,6 +27,6 @@ One museum (the Met). Three browser windows side by side, each about 400 px wide
 
 ## Do not
 
-- Do not say or show the word the kickoff brief bans (the one Smartify uses to describe its tours).
+- Do not say or show the word the original brief bans (the one Smartify uses to describe its tours).
 - Do not crop out the footer notice or the floor-data notice.
 - Do not claim the step-free route is verified. The app says the floor data is hand-built; leave that visible.

@@ -1,5 +1,9 @@
 # Museum plans for the rest of us
 
+[![ci](https://github.com/karthikvalluri85/museum-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/karthikvalluri85/museum-planner/actions/workflows/ci.yml)
+
+**Try it:** https://planner-284069478679.us-central1.run.app
+
 Museums are built for a visitor with three free hours, two good legs, no kids, and no sensory issues. Most people are not that visitor. This app builds a visit plan from what you like, how long you have, and what your body can do today.
 
 Built for the Product Hunt x Google Cloud Run "Build for Good" contest.
@@ -71,6 +75,14 @@ curl -s -X POST http://localhost:8080/api/plan -H "content-type: application/jso
 4. Every plan says it is built from public data and that the museum has not reviewed it.
 
 Where each is enforced: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#product-guardrails-and-where-each-is-enforced).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). The most useful contribution is a correction to a floor map: [report one here](https://github.com/karthikvalluri85/museum-planner/issues/new?template=floor-data-error.yml). Security and privacy reports go through [SECURITY.md](SECURITY.md).
+
+## License
+
+No license has been chosen yet, so the code is not licensed for reuse. The bundled museum records have their own terms; see `services/ingestion-job/fixtures/README.md`.
 
 ## Honest limits
 

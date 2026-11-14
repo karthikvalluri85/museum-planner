@@ -8,9 +8,6 @@ info:
   version: 1.0.0
   summary: "Builds a museum visit plan from interests, time, and what the visitor's body can do that day."
   description: "Stateless. Replanning is another POST /api/plan carrying the visitor's current gallery and the objects already seen."
-  license:
-    name: MIT
-    identifier: MIT
 servers:
   - url: "http://localhost:8080"
     description: "Local (docker compose or uvicorn)"

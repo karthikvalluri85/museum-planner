@@ -4,7 +4,7 @@
 
 | What | Value |
 |---|---|
-| Google Cloud project | `museum-planner-514613` (free trial, expires 2027-02-12) |
+| Google Cloud project | `museum-planner-514613` |
 | Region | `us-central1` |
 | Planner (public) | Cloud Run service `planner`, runs as `planner-sa` |
 | Ingestion | Cloud Run job `ingestion-job`, runs as `ingestion-sa` |
@@ -13,7 +13,7 @@
 | Timer | Cloud Scheduler `ingest-tick`, every 10 minutes, as `scheduler-sa` |
 | Data loaded | 976 Art Institute of Chicago works, 41 Met objects |
 
-`deploy/verify.sh` passed against the live address for both museums, and a timer-started run of the job completed. The deployment was done one step at a time with the commands in `deploy/gcp-deploy.sh`, not by running that script in one go. Steps 1 and 2 below are therefore done; they stay here as the record of how to do it again. Step 3 (GitHub) is not done.
+`deploy/verify.sh` passed against the live address for both museums, and a timer-started run of the job completed. The deployment was done one step at a time with the commands in `deploy/gcp-deploy.sh`, not by running that script in one go. Steps 1 and 2 below are therefore done; they stay here as the record of how to do it again. The code is on GitHub at https://github.com/karthikvalluri85/museum-planner; the deploy workflow in step 3 is not set up.
 
 To redeploy after a code change:
 
