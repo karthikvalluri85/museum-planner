@@ -20,8 +20,6 @@ gcloud projects delete museum-planner-514613
 
 While offline, the only ongoing use is storage for the built images and the museum data.
 
-The address was https://planner-284069478679.us-central1.run.app.
-
 | What | Value |
 |---|---|
 | Google Cloud project | `museum-planner-514613` |
@@ -46,7 +44,7 @@ gcloud run jobs deploy ingestion-job --source services/ingestion-job --project m
 ```
 
 ```bash
-bash deploy/verify.sh https://planner-284069478679.us-central1.run.app aic
+bash deploy/verify.sh "$(gcloud run services describe planner --project museum-planner-514613 --region us-central1 --format='value(status.url)')" aic
 ```
 
 On this Windows machine, `gcloud` mishandles arguments that contain spaces when started from Git Bash. Run it from PowerShell, or avoid spaces in arguments.
