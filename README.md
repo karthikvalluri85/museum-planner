@@ -2,7 +2,18 @@
 
 [![ci](https://github.com/karthikvalluri85/museum-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/karthikvalluri85/museum-planner/actions/workflows/ci.yml)
 
-**Try it:** https://planner-284069478679.us-central1.run.app
+## How to use it
+
+<img src="docs/images/how-to-use.gif" alt="Walkthrough of the app on a phone: pick a museum, tap interests, choose 90 minutes and step-free, build the plan, read the stops, then replan after tapping Running late." width="300">
+
+1. **Pick a museum.**
+2. **Tap what you like,** or type your own words.
+3. **Say how long you have.**
+4. **Say what your body needs today:** step-free, limited stamina, with a young child, low sensory, or a short visit.
+5. **Tap "Build my plan".** You get an ordered route: each stop with its gallery number, one sentence on why it was picked, the minutes to spend there, and the minutes to walk to the next, naming any elevator on the way.
+6. **Plans change.** Tap "I'm here" on the stop you have reached, then "Running late" or "Skip this wing", and the rest of the visit is rebuilt from where you are standing.
+
+The plan says "step-free" only when every connection on the route is marked step-free, and it tells you what each of your choices did. The recording shows the app running on the Metropolitan Museum of Art's open-access data.
 
 Museums are built for a visitor with three free hours, two good legs, no kids, and no sensory issues. Most people are not that visitor. This app builds a visit plan from what you like, how long you have, and what your body can do today.
 

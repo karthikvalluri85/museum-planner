@@ -253,3 +253,7 @@ legend + .toggle { border-top: 0; }
 
 .stop > .walk { grid-column: 1 / -1; margin-top: 0.5rem; }
 .stop { margin-bottom: 0.75rem; }
+
+.floor-source { margin-top: 0.25rem; }
+.floor-source summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); text-decoration: underline; }
+.floor-source p { overflow-wrap: anywhere; margin: 0 0 0.5rem; }

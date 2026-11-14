@@ -271,9 +271,13 @@ function renderMuseumInfo() {
   const fd = m.floor_data;
   box.append(
     h("p", { class: `floor-status ${fd.verification_status === "verified" ? "verified" : ""}`, text: floorStatusText(fd) }),
-    h("p", { text: `Floor data source: ${fd.source}` }),
-    fd.notes ? h("p", { text: fd.notes }) : null,
     h("p", { text: m.data_notice }),
+    // The provenance is long (sources, dates, what could not be read); keep it one tap away.
+    h("details", { class: "floor-source" },
+      h("summary", { text: "Where this floor map comes from" }),
+      h("p", { text: fd.source }),
+      fd.notes ? h("p", { text: fd.notes }) : null,
+    ),
   );
 }
 
