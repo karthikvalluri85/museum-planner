@@ -26,7 +26,7 @@ jobs:
         run: node tools/validate-contracts.mjs
       - name: Floor graphs
         run: node tools/validate-contracts.mjs --graph services/ingestion-job/seed/floor_graphs/*.json
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Independent OpenAPI 3.1 validation
@@ -45,7 +45,7 @@ jobs:
         working-directory: services/${{ matrix.service }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - run: pip install --quiet -r services/ingestion-job/requirements.txt -r services/planner/requirements.txt
