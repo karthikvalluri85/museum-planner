@@ -4,7 +4,7 @@ Museums are built for a visitor with three free hours, two good legs, no kids, a
 
 Built for the Product Hunt x Google Cloud Run "Build for Good" contest.
 
-**Status: built local-first. Not deployed.** Both test suites and the offline integration audit pass locally; the Firestore, Pub/Sub, Docker, and deploy paths have not been run. [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md) is the path from here to a verified deployment.
+**Status: deployed on 2026-11-13 and verified with real requests.** Live at https://planner-284069478679.us-central1.run.app (Google Cloud project `museum-planner-514613`, region `us-central1`). Both test suites and the offline integration audit pass locally. Not yet run: `docker-compose.yml`, the GitHub workflows, and `deploy/gcp-deploy.sh` end to end (the deployment was done step by step with the same commands). [docs/HANDOVER_CREDENTIALS.md](docs/HANDOVER_CREDENTIALS.md) is the path from here to a verified deployment.
 
 ## Layout
 

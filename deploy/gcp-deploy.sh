@@ -102,8 +102,8 @@ gcloud run deploy "$PLANNER_NAME" --source "$PLANNER_PATH" --project "$P" --regi
 URL="$(gcloud run services describe "$PLANNER_NAME" --project "$P" --region "$R" --format='value(status.url)')"
 
 step "8. Scheduler tick"
-# Assumption to confirm against current docs: this is the documented way to run a job on a schedule.
-RUN_URI="https://$R-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/$P/jobs/$JOB_NAME:run"
+# The documented form (docs.cloud.google.com/run/docs/execute/jobs-on-schedule, read 2026-11-13).
+RUN_URI="https://run.googleapis.com/v2/projects/$P/locations/$R/jobs/$JOB_NAME:run"
 if gcloud scheduler jobs describe "$SCHEDULER_JOB" --project "$P" --location "$R" >/dev/null 2>&1; then
   echo "Scheduler job $SCHEDULER_JOB already exists."
 else

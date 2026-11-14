@@ -14,8 +14,8 @@ info:
 servers:
   - url: "http://localhost:8080"
     description: "Local (docker compose or uvicorn)"
-  - url: "https://planner-PLACEHOLDER.a.run.app"
-    description: "Cloud Run (filled in after first deploy)"
+  - url: "https://planner-284069478679.us-central1.run.app"
+    description: "Cloud Run, us-central1"
 tags:
   - name: ops
   - name: museums

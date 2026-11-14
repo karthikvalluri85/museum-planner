@@ -4,7 +4,7 @@ A web app that builds a museum visit plan from three things a visitor tells it: 
 
 This document is tied to `/contracts`. The sections between `GENERATED` markers are rendered from the contracts and from `docs/decisions.json` by `node tools/gen-architecture.mjs`; `node tools/validate-contracts.mjs` fails if they are stale. Everything else is hand-written.
 
-**Status on 2026-11-13: built local-first and tested offline. Nothing is deployed.** See [HANDOVER_CREDENTIALS.md](HANDOVER_CREDENTIALS.md).
+**Status on 2026-11-13: deployed to Cloud Run and verified with real requests at https://planner-284069478679.us-central1.run.app.** See [HANDOVER_CREDENTIALS.md](HANDOVER_CREDENTIALS.md).
 
 ## The five pieces
 
@@ -222,5 +222,5 @@ Without Docker, `STORE_BACKEND=file` (D15) runs the same pipeline against a dire
 
 - The floor graphs are hand-built per museum and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md).
 - A new museum needs two things in the ingestion image: an adapter for its API shape and a floor graph. The Pub/Sub message activates a museum; it does not teach the job a new API.
-- D05 assumes Pub/Sub cannot start a Cloud Run job directly. Confirm against current Google Cloud documentation before launch; if it can, the Scheduler tick can go.
+- D05 assumes Pub/Sub cannot start a Cloud Run job directly. Google's page on running jobs on a schedule (read 2026-11-13) describes only Cloud Scheduler and gave the address the timer calls, which works in the deployed system. That page does not rule out a direct Pub/Sub trigger, so the assumption is still unconfirmed.
 - Decisions marked `assumption` in the table were made without the owner's input.

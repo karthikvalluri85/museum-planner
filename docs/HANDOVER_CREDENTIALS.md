@@ -1,6 +1,37 @@
 # Handover: what to run once you have credentials
 
-The system was built local-first on a machine with no Docker, no GCP project, and no GitHub remote. **Nothing is deployed.** Both Python test suites and the offline integration audit pass locally (2026-11-13), using a Python 3.12 installed inside the project folder. This page is the path from here to a verified deployment.
+**Deployed on 2026-11-13.** Live at https://planner-284069478679.us-central1.run.app.
+
+| What | Value |
+|---|---|
+| Google Cloud project | `museum-planner-514613` (free trial, expires 2027-02-12) |
+| Region | `us-central1` |
+| Planner (public) | Cloud Run service `planner`, runs as `planner-sa` |
+| Ingestion | Cloud Run job `ingestion-job`, runs as `ingestion-sa` |
+| Database | Firestore `(default)`, Native mode |
+| Messages | Pub/Sub topic `ingest-museum`, subscription `ingest-museum-job` |
+| Timer | Cloud Scheduler `ingest-tick`, every 10 minutes, as `scheduler-sa` |
+| Data loaded | 976 Art Institute of Chicago works, 41 Met objects |
+
+`deploy/verify.sh` passed against the live address for both museums, and a timer-started run of the job completed. The deployment was done one step at a time with the commands in `deploy/gcp-deploy.sh`, not by running that script in one go. Steps 1 and 2 below are therefore done; they stay here as the record of how to do it again. Step 3 (GitHub) is not done.
+
+To redeploy after a code change:
+
+```bash
+gcloud run deploy planner --source services/planner --project museum-planner-514613 --region us-central1 --quiet
+```
+
+```bash
+gcloud run jobs deploy ingestion-job --source services/ingestion-job --project museum-planner-514613 --region us-central1 --quiet
+```
+
+```bash
+bash deploy/verify.sh https://planner-284069478679.us-central1.run.app aic
+```
+
+On this Windows machine, `gcloud` mishandles arguments that contain spaces when started from Git Bash. Run it from PowerShell, or avoid spaces in arguments.
+
+Both Python test suites and the offline integration audit pass locally, using a Python 3.12 installed inside the project folder.
 
 Placeholders used below: `GCP_PROJECT_ID`, `GCP_REGION`, `GITHUB_REPO_URL`, `WORKLOAD_IDENTITY_PROVIDER`.
 
@@ -126,9 +157,9 @@ The last command prints the value for `WORKLOAD_IDENTITY_PROVIDER`. `DEPLOY_SERV
 
 1. **The Firestore and Pub/Sub code paths.** Everything was tested through the file-backed store and a fake queue. `FirestoreStore` (both services) and `PubSubPullQueue` have never run, not even against the emulators, because there is no Docker or Java here. `docker compose up` is the first real test of them.
 2. **`docker-compose.yml`.** Never run. The emulator image tag, its health checks, and the Pub/Sub REST calls in `pubsub-init` are from memory.
-3. **`deploy/gcp-deploy.sh` and both workflows.** Never run. Shell syntax is checked; the gcloud flags are not.
-4. **The Scheduler-to-job call** (step 8 of the deploy script) and decision D05 (Pub/Sub cannot start a job directly). Confirm both against current Cloud Run documentation.
-5. **The live museum adapters at full size.** Both ran against the real APIs on 2026-11-13 with small caps (200 AIC works, 25 Met objects); the output passed the contract schemas and produced valid plans. A full 1,500-object Met run has not been tried and may be rate limited. Also checked that day: the Met's `/v1/search` returns HTTP 410 (retired) and `/v1.1/search` returns 200, so the adapter uses `v1.1`. The Met blocks scripted clients after a burst of requests (HTTP 403), which is why only 41 real Met records are in the fixtures; a live run from Cloud Run may hit the same wall. The AIC API refuses to page past 1,000 search results, so one run ingests about 1,000 AIC works at most.
+3. **`deploy/gcp-deploy.sh` as a single run, and both workflows.** Every command in the script has now been run by hand against the real project and works, with one correction (the timer's address). The script itself has not been run start to finish, and the GitHub workflows have never run.
+4. **Decision D05** (Pub/Sub cannot start a job directly) is still an assumption. The Scheduler-to-job call is confirmed: the address was taken from Google's documentation and a timer-started run completed.
+5. **The live museum adapters at full size.** Both ran against the real APIs on 2026-11-13 with small caps (200 AIC works, 25 Met objects); the output passed the contract schemas and produced valid plans. From Cloud Run, the Met API answers HTTP 403 after about 40 object requests, at 10 per second and at 3 per second alike, so the Met has 41 objects. The adapter keeps what it fetched. Getting more needs the job to collect the Met a little at a time across runs, which is not built. Also checked that day: the Met's `/v1/search` returns HTTP 410 (retired) and `/v1.1/search` returns 200, so the adapter uses `v1.1`. The Met blocks scripted clients after a burst of requests (HTTP 403), which is why only 41 real Met records are in the fixtures; a live run from Cloud Run may hit the same wall. The AIC API refuses to page past 1,000 search results, so one run ingests about 1,000 AIC works at most.
 6. **The floor graphs.** Hand-built and unverified on site. See [FLOOR_GRAPHS.md](FLOOR_GRAPHS.md). Until someone checks them, the app says so on every plan. Known gaps found by comparing the graphs with real API records in the fixtures:
    - The Met graph was built from a map dated about 2016 to 2020. Live Met records use gallery numbers `341`, `361`, `362`, `363` (the Rockefeller Wing, renumbered when it reopened) and `099`, none of which are in the graph, so objects there cannot be planned yet. Get the current map from metmuseum.org and update `services/ingestion-job/seed/floor_graphs/met.json`.
    - The Met graph marks no place as near both a restroom and a cafe, and only 4 places with seating, so plans for a young child end near a restroom only and limited-stamina plans get few rest stops.
