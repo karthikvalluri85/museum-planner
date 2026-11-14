@@ -142,6 +142,13 @@
       "status": "decided"
     },
     {
+      "id": "D22",
+      "title": "A museum whose API cuts each run short is collected a batch at a time",
+      "decision": "For such a museum the job reads back what it has stored, asks the API only for objects it lacks, and writes the merged set. The museum document says whether collection is complete, and the Scheduler tick keeps going until it is.",
+      "why": "The Met's API refuses a client after about 40 object requests, at any speed we tried. Asking for a little every 10 minutes is slower but gentler on their service than retrying, and it turns the timer from a formality into the thing that fills the museum.",
+      "status": "decided"
+    },
+    {
       "id": "D21",
       "title": "Local-first, deploy later",
       "decision": "Everything is built and tested offline; deployment is a parameterized script and workflow that run once a GCP project and GitHub repository exist.",
