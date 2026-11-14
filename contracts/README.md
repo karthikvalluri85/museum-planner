@@ -22,6 +22,8 @@ Read protocol: read `museums/{id}`, then chunks `0000` to `chunk_count - 1`, the
 
 Write protocol: write the floor graph, then the chunks, then delete chunks at or beyond the new count, then write the museum document last.
 
+Batch-at-a-time ingest: some museum APIs refuse more than a few dozen requests per run. For those, each run reads the stored objects back, fetches only objects it does not have yet, and writes the merged set by the same protocol. `museums/{id}.ingest_complete` is false until the museum reaches `ingest_target_count` or the API has nothing more to give. Readers need not care: every write leaves a complete, valid museum.
+
 ### File store (offline tests only)
 
 With `STORE_BACKEND=file`, the same documents are JSON files under `FILE_STORE_DIR`, mirroring the Firestore paths:

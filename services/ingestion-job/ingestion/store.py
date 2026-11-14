@@ -32,6 +32,16 @@ class Store(Protocol):
         """museum id -> last_ingested_at, for every museum in the store."""
         ...
 
+    def incomplete_museums(self) -> list[str]:
+        """Ids of museums whose document says ingest_complete is false."""
+        ...
+
+    def read_museum(self, museum_id: str) -> Doc | None: ...
+
+    def read_chunks(self, museum_id: str, count: int) -> list[Doc]:
+        """Chunks 0..count-1 (the read protocol). Raises LookupError if one is missing."""
+        ...
+
 
 class FileStore:
     def __init__(self, root: Path) -> None:
@@ -60,6 +70,26 @@ class FileStore:
         for path in sorted((self._root / "museums").glob("*.json")):
             times[path.stem] = json.loads(path.read_text(encoding="utf-8")).get("last_ingested_at")
         return times
+
+    def incomplete_museums(self) -> list[str]:
+        out = []
+        for path in sorted((self._root / "museums").glob("*.json")):
+            if json.loads(path.read_text(encoding="utf-8")).get("ingest_complete") is False:
+                out.append(path.stem)
+        return out
+
+    def read_museum(self, museum_id: str) -> Doc | None:
+        path = self._root / "museums" / f"{museum_id}.json"
+        return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+    def read_chunks(self, museum_id: str, count: int) -> list[Doc]:
+        chunks = []
+        for index in range(count):
+            path = self._chunk_dir(museum_id) / f"{chunk_name(index)}.json"
+            if not path.is_file():
+                raise LookupError(f"chunk {chunk_name(index)} of {museum_id} is missing")
+            chunks.append(json.loads(path.read_text(encoding="utf-8")))
+        return chunks
 
     def _chunk_dir(self, museum_id: str) -> Path:
         return self._root / "museums" / museum_id / "object_chunks"
@@ -103,6 +133,23 @@ class FirestoreStore:
     def last_ingested_times(self) -> dict[str, str | None]:
         snapshots = self._client.collection("museums").select(["last_ingested_at"]).stream()
         return {snap.id: (snap.to_dict() or {}).get("last_ingested_at") for snap in snapshots}
+
+    def incomplete_museums(self) -> list[str]:
+        snapshots = self._client.collection("museums").select(["ingest_complete"]).stream()
+        return sorted(s.id for s in snapshots if (s.to_dict() or {}).get("ingest_complete") is False)
+
+    def read_museum(self, museum_id: str) -> Doc | None:
+        snapshot = self._client.collection("museums").document(museum_id).get()
+        return snapshot.to_dict() if snapshot.exists else None
+
+    def read_chunks(self, museum_id: str, count: int) -> list[Doc]:
+        chunks = []
+        for index in range(count):
+            snapshot = self._chunks(museum_id).document(chunk_name(index)).get()
+            if not snapshot.exists:
+                raise LookupError(f"chunk {chunk_name(index)} of {museum_id} is missing")
+            chunks.append(snapshot.to_dict())
+        return chunks
 
     def _chunks(self, museum_id: str) -> Any:
         return self._client.collection("museums").document(museum_id).collection("object_chunks")

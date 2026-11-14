@@ -41,6 +41,7 @@ class NormalizedObject(_Doc):
     artist: str | None
     date: str | None
     tags: list[Tag]
+    interest_tags: list[Tag] = Field(default_factory=list)
     department: str | None = None
     medium: str | None = None
     description: str | None = None
@@ -51,7 +52,7 @@ class NormalizedObject(_Doc):
     size_class: SizeClass
     is_highlight: bool
 
-    @field_validator("tags")
+    @field_validator("tags", "interest_tags")
     @classmethod
     def _tags_unique(cls, tags: list[str]) -> list[str]:
         if len(set(tags)) != len(tags):
@@ -59,9 +60,11 @@ class NormalizedObject(_Doc):
         return tags
 
     @model_validator(mode="after")
-    def _id_matches(self) -> "NormalizedObject":
+    def _consistent(self) -> "NormalizedObject":
         if self.id != f"{self.museum_id}:{self.source_id}":
             raise ValueError("id must be museum_id:source_id")
+        if not set(self.interest_tags) <= set(self.tags):
+            raise ValueError("interest_tags must be a subset of tags")
         return self
 
 
@@ -99,6 +102,8 @@ class Museum(_Doc):
     facets: list[Facet] = Field(max_length=60)
     last_ingested_at: str
     ingest_run_id: str = Field(min_length=1)
+    ingest_complete: bool = True
+    ingest_target_count: int = Field(ge=1)
 
 
 # ---- floor-graph.schema.json ----

@@ -5,7 +5,13 @@
   "title": "Bronze Cat (synthetic example)",
   "artist": null,
   "date": "ca. 600 BCE",
-  "tags": ["cats", "animals", "egyptian art", "bronze", "sculpture"],
+  "tags": [
+    "cats",
+    "animals",
+    "egyptian art",
+    "bronze",
+    "sculpture"
+  ],
   "department": "Egyptian Art",
   "medium": "Bronze",
   "description": null,
@@ -14,5 +20,10 @@
   "source_url": "https://example.org/objects/1001",
   "dwell_minutes": 4,
   "size_class": "small",
-  "is_highlight": true
+  "is_highlight": true,
+  "interest_tags": [
+    "cats",
+    "animals",
+    "egyptian art"
+  ]
 }

@@ -5,6 +5,7 @@ page that reaches past the 1000th result (HTTP 403 'Invalid number of results'),
 return at most 1000 works."""
 
 import re
+from collections.abc import Collection
 from typing import Any
 
 from pydantic import ValidationError
@@ -47,6 +48,7 @@ _NOT_SUBJECTS = frozenset({"century of progress", "world's fairs", "chicago worl
 class AicAdapter:
     museum_id = "aic"
     fixture_file = "artworks.json"
+    incremental = False
     info = MuseumInfo(
         name="Art Institute of Chicago",
         city="Chicago",
@@ -74,6 +76,7 @@ class AicAdapter:
                 raw.department_title,
                 *(raw.term_titles or []),
             ],
+            interest_tags=self._interest(raw),
             department=raw.department_title,
             medium=raw.medium_display,
             description=strip_html(raw.short_description),
@@ -90,6 +93,10 @@ class AicAdapter:
             raw = AicArtwork.model_validate(record)
         except ValidationError:
             return []
+        return self._interest(raw)
+
+    @staticmethod
+    def _interest(raw: AicArtwork) -> list[str]:
         # Chips come from subjects, style, and department. classification_title is often a
         # medium ("oil on canvas") and term_titles mixes in materials and techniques; those
         # stay searchable tags. Qualified vocabulary terms ("red (color)") and exhibition
@@ -97,7 +104,10 @@ class AicAdapter:
         chips = clean_tags([*(raw.subject_titles or []), raw.style_title, raw.department_title])
         return [tag for tag in chips if "(" not in tag and tag not in _NOT_SUBJECTS]
 
-    def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
+    def fetch_live(
+        self, http: HttpClient, max_objects: int, skip_ids: Collection[str] = ()
+    ) -> list[dict[str, Any]]:
+        # One run gets the whole museum, so there is never anything to skip.
         http.reset_budget(REQUEST_BUDGET_FACTOR * max_objects)
         records: list[dict[str, Any]] = []
         on_view = 0

@@ -234,8 +234,162 @@ def test_report_is_keyed_by_museum_id(make_runner):
     runner, _, _ = make_runner([{"museum_id": "aic"}])
     report = runner.run().as_dict()
     assert set(report["aic"]) == {
-        "museum_id", "status", "objects_written", "skipped_no_gallery",
-        "galleries_not_in_floor_graph", "chunk_count", "error",
+        "museum_id", "status", "objects_written", "objects_added", "skipped_no_gallery",
+        "galleries_not_in_floor_graph", "chunk_count", "ingest_complete", "error",
     }
     assert report["aic"]["status"] == "ok" and report["aic"]["error"] is None
     json.dumps({"run": report})
+
+
+# ---- batch-at-a-time ingest (a museum whose API cuts each run short) ----
+
+
+class DripSource:
+    """A resumable live source for the Met that gives at most `per_run` new records per load,
+    as the real API does, and can be told to refuse outright."""
+
+    resumable = True
+
+    def __init__(self, records, per_run):
+        self._records, self.per_run = records, per_run
+        self.refuse = False
+        self.loads = []
+
+    def load(self, adapter, max_objects, skip_ids=()):
+        from ingestion.http_client import UpstreamError
+
+        self.loads.append((max_objects, set(skip_ids)))
+        if self.refuse:
+            raise UpstreamError("the Met API refused every object request (HTTP 403)")
+        fresh = [r for r in self._records if str(r["objectID"]) not in set(skip_ids)]
+        return fresh[: min(self.per_run, max_objects)]
+
+
+def met_records(count):
+    return [
+        {"objectID": 1000 + i, "title": f"Object {i}", "GalleryNumber": "770", "department": "The American Wing",
+         "tags": [{"term": "Landscapes"}], "isHighlight": i % 5 == 0}
+        for i in range(count)
+    ]
+
+
+def test_incremental_museum_grows_across_runs_until_the_target(make_runner, base_config):
+    source = DripSource(met_records(12), per_run=5)
+    seen = []
+    for _ in range(4):
+        runner, _, _ = make_runner(source=source, museum_id="met", max_objects=12)
+        met = runner.run().as_dict()["met"]
+        seen.append((met["objects_written"], met["objects_added"], met["ingest_complete"]))
+    assert seen == [(5, 5, False), (10, 5, False), (12, 2, True), (12, 0, True)]
+
+    museum = read(base_config.file_store_dir / "museums" / "met.json")
+    assert museum["object_count"] == 12 and museum["ingest_complete"] is True and museum["ingest_target_count"] == 12
+    ids = [o["source_id"] for o in written_objects(base_config.file_store_dir, "met")]
+    assert len(ids) == len(set(ids)) == 12
+    # Each run asked only for what was missing and named what it already had.
+    assert [(wanted, len(skip)) for wanted, skip in source.loads] == [(12, 0), (7, 5), (2, 10)]
+
+
+def test_incomplete_museum_is_picked_up_by_a_run_with_no_messages(make_runner, base_config):
+    source = DripSource(met_records(9), per_run=4)
+    make_runner([{"museum_id": "met", "max_objects": 9}], source=source)[0].run()
+    assert read(base_config.file_store_dir / "museums" / "met.json")["ingest_complete"] is False
+
+    report = make_runner([], source=source)[0].run().as_dict()  # a timer tick: empty mailbox
+    assert report["met"]["objects_written"] == 8 and report["met"]["ingest_complete"] is False
+    report = make_runner([], source=source)[0].run().as_dict()
+    assert report["met"]["objects_written"] == 9 and report["met"]["ingest_complete"] is True
+    assert make_runner([], source=source)[0].run().as_dict() == {}  # complete: nothing left to do
+
+
+def test_incremental_museum_completes_when_the_api_has_nothing_more(make_runner, base_config):
+    source = DripSource(met_records(3), per_run=5)
+    first = make_runner(source=source, museum_id="met", max_objects=50)[0].run().as_dict()["met"]
+    assert (first["objects_written"], first["ingest_complete"]) == (3, False)
+    second = make_runner(source=source, museum_id="met", max_objects=50)[0].run().as_dict()["met"]
+    assert (second["objects_written"], second["objects_added"], second["ingest_complete"]) == (3, 0, True)
+
+
+def test_a_refused_run_keeps_the_store_untouched_and_is_not_a_failure(make_runner, base_config):
+    source = DripSource(met_records(12), per_run=5)
+    make_runner(source=source, museum_id="met", max_objects=12)[0].run()
+    museum_file = base_config.file_store_dir / "museums" / "met.json"
+    before = museum_file.read_text(encoding="utf-8")
+
+    source.refuse = True
+    store = SpyStore(base_config.file_store_dir)
+    runner, _, _ = make_runner(source=source, store=store, museum_id="met", max_objects=12)
+    report = runner.run()
+    assert report.exit_code == 0
+    assert report.as_dict()["met"]["objects_written"] == 5 and report.as_dict()["met"]["ingest_complete"] is False
+    assert store.calls == [] and museum_file.read_text(encoding="utf-8") == before
+
+
+def test_a_museum_that_stalls_for_a_day_is_left_as_it_is(make_runner, base_config):
+    from datetime import timedelta
+
+    from ingestion.runner import STALL_HOURS, Runner
+    from tests.conftest import FIXED_NOW, TEST_SEED_DIR, FakeQueue
+
+    source = DripSource(met_records(12), per_run=5)
+    make_runner(source=source, museum_id="met", max_objects=12)[0].run()  # stored at FIXED_NOW
+    source.refuse = True
+
+    def run_at(when):
+        from dataclasses import replace
+
+        config = replace(base_config, museum_id="met", max_objects=12)
+        return Runner(
+            config=config, store=FileStore(config.file_store_dir), queue=FakeQueue([]), source=source,
+            seed_dir=TEST_SEED_DIR, clock=lambda: when,
+        ).run().as_dict()["met"]
+
+    assert run_at(FIXED_NOW + timedelta(hours=STALL_HOURS - 1))["ingest_complete"] is False
+    gave_up = run_at(FIXED_NOW + timedelta(hours=STALL_HOURS + 1))
+    assert gave_up["ingest_complete"] is True and gave_up["objects_written"] == 5
+    assert read(base_config.file_store_dir / "museums" / "met.json")["ingest_complete"] is True
+
+
+def test_refresh_message_starts_the_museum_again(make_runner, base_config):
+    source = DripSource(met_records(12), per_run=5)
+    make_runner(source=source, museum_id="met", max_objects=12)[0].run()
+    make_runner(source=source, museum_id="met", max_objects=12)[0].run()
+    assert read(base_config.file_store_dir / "museums" / "met.json")["object_count"] == 10
+
+    report = make_runner([{"museum_id": "met", "reason": "refresh", "max_objects": 12}], source=source)[0].run().as_dict()
+    assert report["met"]["objects_written"] == 5 and report["met"]["ingest_complete"] is False
+    assert source.loads[-1] == (12, set())
+
+
+def test_a_first_run_that_is_refused_outright_still_fails(make_runner):
+    source = DripSource(met_records(12), per_run=5)
+    source.refuse = True
+    runner, _, queue = make_runner([{"museum_id": "met"}], source=source)
+    report = runner.run()
+    assert report.exit_code == 1 and report.as_dict()["met"]["status"] == "failed"
+    assert queue.acked == []
+
+
+def test_fixture_source_never_accumulates(make_runner, base_config):
+    """Fixture mode writes the same museum every time, complete, whatever was there before."""
+    for _ in range(2):
+        runner, _, _ = make_runner([{"museum_id": "met"}])
+        met = runner.run().as_dict()["met"]
+        assert met["ingest_complete"] is True and met["objects_added"] == met["objects_written"]
+    assert read(base_config.file_store_dir / "museums" / "met.json")["ingest_complete"] is True
+
+
+def test_met_live_skips_objects_already_in_hand():
+    import httpx
+
+    from ingestion.adapters.met import MetAdapter
+    from tests.test_live import client, met_handler
+
+    calls = []
+    handler = met_handler(calls, highlights={1: [1, 2, 3]}, on_view={1: [1, 2, 3, 4, 5, 6]})
+    records = MetAdapter().fetch_live(client(handler), max_objects=2, skip_ids={"1", "2", "3", "4"})
+    assert [r["objectID"] for r in records] == [5, 6]
+    fetched = {c.url.path.rsplit("/", 1)[1] for c in calls if "/objects/" in c.url.path}
+    assert fetched == {"5", "6"}
+    # The search asks for enough ids to get past the four already in hand.
+    assert {c.url.params["limit"] for c in calls if c.url.path.endswith("/search")} == {"6"}

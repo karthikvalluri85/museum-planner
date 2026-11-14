@@ -1,6 +1,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from collections.abc import Collection
 from typing import Any, Protocol
 
 from ingestion.http_client import HttpClient
@@ -24,9 +25,16 @@ class Adapter(Protocol):
     museum_id: str
     info: MuseumInfo
     fixture_file: str
+    # True if the API cuts a client off after a few dozen requests, so the museum has to be
+    # collected a batch at a time across runs (see contracts/README.md).
+    incremental: bool
 
-    def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
-        """Raw records straight from the museum API."""
+    def fetch_live(
+        self, http: HttpClient, max_objects: int, skip_ids: Collection[str] = ()
+    ) -> list[dict[str, Any]]:
+        """Up to max_objects raw records straight from the museum API, leaving out objects whose
+        source id is in skip_ids. An empty list means the API has nothing more to give; raise
+        UpstreamError if it refused before giving anything."""
         ...
 
     def normalize(self, record: dict[str, Any]) -> NormalizedObject | Skip:

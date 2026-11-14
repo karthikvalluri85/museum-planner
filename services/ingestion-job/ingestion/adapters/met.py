@@ -11,6 +11,7 @@ import logging
 
 from concurrent.futures import ThreadPoolExecutor
 from itertools import zip_longest
+from collections.abc import Collection
 from typing import Any
 
 from pydantic import ValidationError
@@ -49,6 +50,7 @@ def _round_robin(lists: list[list[int]]) -> list[int]:
 class MetAdapter:
     museum_id = "met"
     fixture_file = "objects.json"
+    incremental = True
     info = MuseumInfo(
         name="The Metropolitan Museum of Art",
         city="New York",
@@ -71,6 +73,7 @@ class MetAdapter:
             date=raw.objectDate,
             tags=[t.term for t in raw.tags or []]
             + [raw.department, raw.classification, raw.objectName, raw.culture, raw.period],
+            interest_tags=self._interest(raw),
             department=raw.department,
             medium=raw.medium,
             description=None,
@@ -85,14 +88,22 @@ class MetAdapter:
             raw = MetObject.model_validate(record)
         except ValidationError:
             return []
+        return self._interest(raw)
+
+    @staticmethod
+    def _interest(raw: MetObject) -> list[str]:
         # Classification and object name ("stone-sculpture", "bottle") stay searchable tags
         # but make poor chips.
         return clean_tags([t.term for t in raw.tags or []] + [raw.department, raw.culture])
 
-    def fetch_live(self, http: HttpClient, max_objects: int) -> list[dict[str, Any]]:
+    def fetch_live(
+        self, http: HttpClient, max_objects: int, skip_ids: Collection[str] = ()
+    ) -> list[dict[str, Any]]:
         http.set_rate(REQUESTS_PER_SECOND)
         http.reset_budget(REQUEST_BUDGET_FACTOR * max_objects)
-        candidates = self._candidate_ids(http, max_objects)
+        skip = set(skip_ids)
+        # Search deep enough to get past the objects already in hand.
+        candidates = [i for i in self._candidate_ids(http, max_objects + len(skip)) if str(i) not in skip]
         records: list[dict[str, Any]] = []
         on_view = 0
         blocked = False

@@ -2,15 +2,29 @@
   "id": "demo",
   "name": "Demo Museum (synthetic example)",
   "city": "Nowhere",
-  "source": { "api_name": "Demo Collection API", "api_base_url": "https://example.org/api", "license": "CC0" },
+  "source": {
+    "api_name": "Demo Collection API",
+    "api_base_url": "https://example.org/api",
+    "license": "CC0"
+  },
   "data_notice": "Built from the museum's public data. The museum has not reviewed this plan.",
   "object_count": 2,
   "skipped_no_gallery_count": 1,
   "chunk_count": 1,
   "facets": [
-    { "tag": "animals", "label": "Animals", "count": 1 },
-    { "tag": "arms and armor", "label": "Arms and Armor", "count": 1 }
+    {
+      "tag": "animals",
+      "label": "Animals",
+      "count": 1
+    },
+    {
+      "tag": "arms and armor",
+      "label": "Arms and Armor",
+      "count": 1
+    }
   ],
   "last_ingested_at": "2026-11-13T09:00:05Z",
-  "ingest_run_id": "2026-11-13T09-00-00Z-demo"
+  "ingest_run_id": "2026-11-13T09-00-00Z-demo",
+  "ingest_complete": true,
+  "ingest_target_count": 1500
 }

@@ -4,7 +4,7 @@ the planner is built against them, so change them only together."""
 import html
 import re
 from collections import Counter
-from collections.abc import Collection, Iterable, Mapping, Sequence
+from collections.abc import Iterable, Sequence
 from enum import Enum
 
 from pydantic import ValidationError
@@ -84,6 +84,7 @@ def build_object(
     artist: str | None = None,
     date: str | None = None,
     tags: Iterable[str | None] = (),
+    interest_tags: Iterable[str | None] = (),
     department: str | None = None,
     medium: str | None = None,
     description: str | None = None,
@@ -99,6 +100,8 @@ def build_object(
     if not title:
         return Skip.INVALID
     size = size_class(max_cm)
+    cleaned = clean_tags(tags)
+    kept = set(cleaned)
     try:
         return NormalizedObject(
             id=f"{museum_id}:{source_id}",
@@ -107,7 +110,9 @@ def build_object(
             title=title,
             artist=blank_to_none(artist),
             date=blank_to_none(date),
-            tags=clean_tags(tags),
+            tags=cleaned,
+            # Tags are capped; an interest tag that fell off the end is not a tag of this object.
+            interest_tags=[t for t in clean_tags(interest_tags, limit=len(cleaned) or 1) if t in kept],
             department=blank_to_none(department),
             medium=blank_to_none(medium),
             description=description,
@@ -142,25 +147,15 @@ def tag_label(tag: str) -> str:
     )
 
 
-def build_facets(
-    objects: Iterable[NormalizedObject],
-    interest_tags: Mapping[str, Collection[str]] | None = None,
-) -> list[Facet]:
+def build_facets(objects: Iterable[NormalizedObject], *, interest_only: bool = True) -> list[Facet]:
     """The 40 most common tags; tags seen only once are left out when at least 10 tags repeat.
 
-    Facets become the interest chips a visitor taps. `interest_tags` (object id -> the tags that
-    name a subject, style, or collection area) keeps materials and techniques such as
-    "oil on canvas" off the chips. A facet is always one of the object's own tags, so tapping a
-    chip always matches something.
+    Facets become the interest chips a visitor taps, so by default only each object's
+    `interest_tags` are counted: subjects, styles, and collection areas, not materials and
+    techniques such as "oil on canvas". Interest tags are a subset of the object's tags, so
+    tapping a chip always matches something.
     """
-
-    def countable(obj: NormalizedObject) -> list[str]:
-        if interest_tags is None:
-            return obj.tags
-        wanted = interest_tags.get(obj.id, ())
-        return [tag for tag in obj.tags if tag in wanted]
-
-    counts = Counter(tag for obj in objects for tag in countable(obj))
+    counts = Counter(tag for obj in objects for tag in (obj.interest_tags if interest_only else obj.tags))
     minimum = 2 if sum(1 for c in counts.values() if c >= 2) >= 10 else 1
     chosen = sorted(((t, c) for t, c in counts.items() if c >= minimum), key=lambda tc: (-tc[1], tc[0]))
     return [Facet(tag=t, label=tag_label(t), count=c) for t, c in chosen[:MAX_FACETS]]

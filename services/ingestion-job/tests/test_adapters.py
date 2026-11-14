@@ -202,14 +202,14 @@ def test_fixture_facets_are_all_interest_tags(fixtures_dir):
 
     for adapter, fixture in ((MetAdapter(), "met/objects.json"), (AicAdapter(), "aic/artworks.json")):
         records = json.loads((fixtures_dir / fixture).read_text(encoding="utf-8"))
-        objects, interest = [], {}
+        objects, allowed = [], set()
         for record in records:
             obj = adapter.normalize(record)
             if isinstance(obj, NormalizedObject):
                 objects.append(obj)
-                interest[obj.id] = set(adapter.interest_tags(record))
-        facets = build_facets(objects, interest)
+                assert obj.interest_tags == [t for t in adapter.interest_tags(record) if t in obj.tags]
+                allowed |= set(obj.interest_tags)
+        facets = build_facets(objects)
         assert facets, fixture
-        allowed = set().union(*interest.values())
         assert all(f.tag in allowed for f in facets)
         assert not any("(" in f.tag or f.tag.startswith("oil ") for f in facets), [f.tag for f in facets]

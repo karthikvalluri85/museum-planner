@@ -16,10 +16,14 @@ from ingestion.normalize import (
 )
 
 
-def make(source_id: str, *, highlight: bool = False, tags: tuple[str, ...] = ("x",), gallery: str = "100") -> NormalizedObject:
+def make(
+    source_id: str, *, highlight: bool = False, tags: tuple[str, ...] = ("x",), gallery: str = "100",
+    interest: tuple[str, ...] | None = None,
+) -> NormalizedObject:
+    """`interest` defaults to every tag, so facet tests need not repeat themselves."""
     result = build_object(
         museum_id="test", source_id=source_id, title=f"Title {source_id}", gallery=gallery, tags=tags,
-        is_highlight=highlight,
+        interest_tags=tags if interest is None else interest, is_highlight=highlight,
     )
     assert isinstance(result, NormalizedObject)
     return result
@@ -95,17 +99,23 @@ def test_facets_keep_singletons_when_few_tags_repeat():
     assert [(f.tag, f.count) for f in facets] == [("a", 2), ("b", 1), ("c", 1)]
 
 
-def test_facets_count_only_interest_tags_when_given():
+def test_facets_count_only_interest_tags():
     objs = [
-        make("1", tags=("landscapes", "oil on canvas", "impressionism")),
-        make("2", tags=("landscapes", "oil on canvas")),
-        make("3", tags=("oil on canvas", "portraits")),
+        make("1", tags=("landscapes", "oil on canvas", "impressionism"), interest=("landscapes", "impressionism")),
+        make("2", tags=("landscapes", "oil on canvas"), interest=("landscapes",)),
+        make("3", tags=("oil on canvas", "portraits"), interest=("portraits", "not on the object")),
     ]
-    interest = {"test:1": {"landscapes", "impressionism"}, "test:2": {"landscapes"}, "test:3": {"portraits", "not on the object"}}
-    facets = build_facets(objs, interest)
+    facets = build_facets(objs)
     assert [(f.tag, f.count) for f in facets] == [("landscapes", 2), ("impressionism", 1), ("portraits", 1)]
-    # Without the filter the material would have been the top chip.
-    assert build_facets(objs)[0].tag == "oil on canvas"
+    # Counting every tag instead, the material would have been the top chip.
+    assert build_facets(objs, interest_only=False)[0].tag == "oil on canvas"
+
+
+def test_interest_tags_are_cleaned_and_kept_to_the_objects_own_tags():
+    obj = make("1", tags=("Landscapes", "oil on canvas"), interest=(" LANDSCAPES ", "Sunsets", "landscapes"))
+    assert obj.tags == ["landscapes", "oil on canvas"]
+    assert obj.interest_tags == ["landscapes"]
+    assert make("2", tags=("x",), interest=()).interest_tags == []
 
 
 def test_facets_capped_at_40_and_labelled():
