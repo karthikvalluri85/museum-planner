@@ -22,7 +22,9 @@ The drafts are written as the product is designed to be. Check each against the 
 - [ ] The Smartify and Infiniteach descriptions are still accurate. Reread their sites the day before.
 - [ ] "No accounts and no cookies" (FAQ 6) is still true of what is deployed, including any analytics added later.
 - [ ] No file in the repo contains the word the original brief bans. Check with a case-insensitive search for `personaliz`.
-- [x] Open-source answer decided: MIT, repository public (2026-11-14).
+- [x] Open-source answer decided: MIT (2026-11-14).
+- [ ] The GitHub repository is public on launch day. The FAQ and README link to it, and the link is a 404 for everyone else while the repository is private.
+- [ ] The contest rules have been checked for whether the code must be public, and by when.
 
 ## November 17
 
